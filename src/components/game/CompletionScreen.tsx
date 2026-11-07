@@ -22,7 +22,11 @@ interface CompletionScreenProps {
   onPlayAgain: () => void;
 }
 
-export function CompletionScreen({ answeredQuestions, skippedCount, onPlayAgain }: CompletionScreenProps) {
+export function CompletionScreen({
+  answeredQuestions,
+  skippedCount,
+  onPlayAgain,
+}: CompletionScreenProps) {
   return (
     <section className="relative space-y-6 pov-rise-in">
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-8 h-72 overflow-hidden">

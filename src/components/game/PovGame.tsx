@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { HeartHandshake, LogOut } from "lucide-react";
 import { Backdrop } from "@/components/game/Backdrop";
 import { CompletionScreen } from "@/components/game/CompletionScreen";
@@ -10,6 +10,7 @@ import { WelcomeScreen } from "@/components/game/WelcomeScreen";
 import { secondaryButton } from "@/components/game/ui";
 import { questions, type Question } from "@/data/questions";
 import { createInitialState, gameReducer, type GameEvent, type GameState } from "@/game/gameState";
+import { submitGameResults } from "@/lib/analytics";
 
 interface PovGameProps {
   onEvent?: (event: GameEvent) => void;
@@ -26,8 +27,19 @@ function segmentsFor(state: GameState, current: number): TrailSegment[] {
 
 export function PovGame({ onEvent }: PovGameProps) {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState);
+  const hasSubmittedRef = useRef(false);
   const { phase } = state;
   const total = questions.length;
+
+  useEffect(() => {
+    if (phase.name !== "complete" || hasSubmittedRef.current) return;
+
+    hasSubmittedRef.current = true;
+    void submitGameResults({
+      answers: state.firstChoices,
+      skippedQuestionIds: state.skipped,
+    });
+  }, [phase.name, state.firstChoices, state.skipped]);
 
   const handleAnswer = (question: Question, optionId: string) => {
     if (state.firstChoices[question.id] === undefined) {
@@ -88,7 +100,10 @@ export function PovGame({ onEvent }: PovGameProps) {
           <CompletionScreen
             answeredQuestions={questions.filter((question) => state.firstChoices[question.id] !== undefined)}
             skippedCount={state.skipped.length}
-            onPlayAgain={() => dispatch({ type: "newGame" })}
+            onPlayAgain={() => {
+              hasSubmittedRef.current = false;
+              dispatch({ type: "newGame" });
+            }}
           />
         );
     }
