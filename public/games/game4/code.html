@@ -61,6 +61,34 @@
     .anim-float { animation: gentleFloat 3.8s ease-in-out infinite; }
     .anim-cta-float { animation: softHover 2.6s ease-in-out infinite; }
     .map-pulse { animation: pulseGlow 1.8s ease-in-out infinite; transform-origin: center; }
+    .learning-scene {
+      min-height: 250px;
+      isolation: isolate;
+    }
+    .learning-scene-copy {
+      width: min(58%, 600px);
+      background: rgba(255, 248, 237, 0.96);
+      backdrop-filter: blur(3px);
+    }
+    .learning-scene-art {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .learning-scene-art svg {
+      width: 100%;
+      height: 100%;
+    }
+    .scene-question {
+      width: min(56%, 640px);
+      background: rgba(255, 248, 237, 0.97);
+      color: #2B2350;
+      box-shadow: 5px 5px 0 #2B2350;
+    }
+    .scene-question p {
+      font-size: clamp(1rem, 1.7vw, 1.5rem);
+      line-height: 1.2;
+    }
 
     /* Landscape layout: keep the illustrated stage open and move controls into a compact lower third. */
     @media (orientation: landscape) and (max-height: 800px) {
@@ -137,6 +165,19 @@
         padding: 0.65rem;
         font-size: 0.75rem;
         line-height: 1.2;
+      }
+      .learning-scene {
+        min-height: 280px;
+      }
+      .learning-scene-copy {
+        width: 72%;
+      }
+      .scene-question {
+        width: 78%;
+        top: 20%;
+      }
+      .scene-question p {
+        font-size: clamp(1rem, 4vw, 1.25rem);
       }
     }
     
@@ -260,6 +301,14 @@
               </button>
             </div>
 
+            <!-- Primary question: intentionally prominent and connected to the illustrated scene -->
+            <div class="scene-question absolute left-3 top-[22%] z-10 rounded-2xl border-3 border-[#2B2350] p-3 sm:p-4 pointer-events-none">
+              <span class="inline-flex rounded-lg bg-[#4DEBE3] px-2 py-1 text-[11px] sm:text-xs font-black uppercase border-2 border-[#2B2350]">
+                What would you do?
+              </span>
+              <p class="mt-2 font-black">${sc.question}</p>
+            </div>
+
             <!-- Bottom: Streamlined, Unobtrusive Dialogue & Choice Deck -->
             <div class="dialogue-deck relative z-10 w-full p-2 sm:p-3 bg-gradient-to-t from-[#140F27]/95 via-[#140F27]/80 to-transparent">
               <div class="dialogue-panel bg-[#FFF8ED] border-2 sm:border-3 border-[#2B2350] rounded-xl p-2.5 sm:p-3 shadow-xl">
@@ -345,148 +394,147 @@
     const scenarios = [
       {
         id: "a1", number: 1, topic: "Peer pressure", scene: "hangout",
-        narration: "You're hanging out with coursemates after class, and the group decides to do something you're not comfortable with.",
+        narration: "You're with a group of friends who are encouraging you to do something that makes you uncomfortable.",
         speaker: { role: "Coursemate (Zack)", line: "Come on, everyone’s heading over—don't be a buzzkill." },
         introExpression: "pressuring",
-        question: "Your friends are pushing you to join an activity you're uneasy about, insisting that 'everyone is on board'. What would you do?",
+        question: "You’re with a group of friends. They encourage you to do something that makes you uncomfortable and say everyone else is doing it. What would you do?",
         options: [
-          { id: "a1-a", text: "Go along with it this once to avoid awkwardness, intending to draw the line next time.", isBest: false, outcome: { expression: "pleased", text: "The group moves on, but the pressure worked. Conceding once often makes it harder to say no later." }, whyNot: "This sets a precedent where conceding to social friction becomes the default response." },
-          { id: "a1-b", text: "Disengage quietly and stand near the edge, hoping they won't call you out for not participating.", isBest: false, outcome: { expression: "neutral", text: "You stay detached. The moment passes, but your boundaries remain unvoiced." }, whyNot: "Passivity avoids immediate friction but leaves your standards unclear to peers." },
-          { id: "a1-c", text: "State clearly that you're sitting this one out, and suggest another plan for later.", isBest: true, outcome: { expression: "thoughtful", text: "There might be mild pushback, but you've set a firm boundary without being confrontational." } }
+          { id: "a1-a", text: "Join in this once so they don’t think you’re boring, and say no next time.", isBest: false, outcome: { expression: "pleased", text: "Joining in to avoid pressure can make it harder to say no later." }, whyNot: "A sets a pattern where “once” keeps repeating." },
+          { id: "a1-b", text: "Stay quiet and hang back, hoping they won’t notice you’re not taking part.", isBest: false, outcome: { expression: "neutral", text: "Staying quiet avoids the moment, but your boundary remains unclear." }, whyNot: "B avoids the situation without saying what you need." },
+          { id: "a1-c", text: "Say you’re not comfortable and won’t join in, even if everyone else is. Suggest something else instead.", isBest: true, outcome: { expression: "thoughtful", text: "You make your own decision and set a clear boundary without putting others down." } }
         ],
-        explanation: "You have the autonomy to make independent decisions, even within close social circles. Setting polite, explicit boundaries preserves your agency.",
-        takeaway: "You don't need to compromise your boundaries to maintain friendships."
+        explanation: "You have the right to make your own decisions, even when others disagree. You don’t have to join in to fit in.",
+        takeaway: "You don’t have to compromise your boundaries to fit in."
       },
       {
         id: "a2", number: 2, topic: "Personal boundaries", scene: "campus-gathering",
-        narration: "At a campus society gathering, an acquaintance approaches you with open arms, even though you’ve previously stated you prefer personal space.",
+        narration: "Someone you know keeps trying to hug you after you have said you do not like being touched.",
         speaker: { role: "Acquaintance (Danial)", line: "Hey! Haven’t seen you in ages, give me a hug!" },
         introExpression: "pressuring",
-        question: "An acquaintance repeatedly tries to initiate physical contact despite you having told them you prefer personal space. What would you do?",
+        question: "Someone you know keeps trying to hug you even after you’ve said you don’t like being touched. What would you do?",
         options: [
-          { id: "a2-a", text: "State your boundary clearly: 'I prefer not being touched.' If the behaviour persists, raise it with a campus advisor or student support officer.", isBest: true, outcome: { expression: "surprised", text: "They step back. Being unambiguous makes your boundary respected, with formal campus channels as backup if ignored." } },
-          { id: "a2-b", text: "Step backward politely each time without saying anything to avoid creating social friction.", isBest: false, outcome: { expression: "thoughtful", text: "They seem confused or oblivious, and your boundary remains unstated." }, whyNot: "Non-verbal avoidance is easily misread as playfulness or hesitation rather than a boundary." },
-          { id: "a2-c", text: "Tolerate it because you know they mean well and you don't want to make things awkward.", isBest: false, outcome: { expression: "pleased", text: "You endure the discomfort, prioritising their social comfort over your bodily autonomy." }, whyNot: "Subordinating personal consent to avoid social discomfort reinforces boundary crossing." }
+          { id: "a2-a", text: "Say clearly that you don’t want to be touched like this. If it keeps happening, tell a trusted adult, such as a parent, teacher or school counsellor.", isBest: true, outcome: { expression: "surprised", text: "You state your boundary clearly and seek support if it is ignored." } },
+          { id: "a2-b", text: "Step away each time without saying anything, so you don’t hurt their feelings.", isBest: false, outcome: { expression: "thoughtful", text: "They may not understand what you need, so the behaviour may continue." }, whyNot: "B leaves the message unclear." },
+          { id: "a2-c", text: "Let it go, because they know you and probably mean well.", isBest: false, outcome: { expression: "pleased", text: "Their intentions do not cancel your right to feel comfortable." }, whyNot: "C puts their feelings ahead of your comfort." }
         ],
-        explanation: "Bodily autonomy is fundamental. Direct communication establishes clarity, and campus support infrastructure exists should boundaries continue to be breached.",
-        takeaway: "Personal physical boundaries apply to everyone, regardless of familiarity."
+        explanation: "Everyone has the right to personal boundaries, whoever the other person is. Say it clearly, and get support if it continues.",
+        takeaway: "Your personal boundaries deserve to be respected."
       },
       {
         id: "a3", number: 3, topic: "Online privacy", scene: "gaming-lobby",
-        narration: "In a gaming server or chat group, a contact you've been messaging begins demanding personal details and guilt-tripping you when you hesitate.",
+        narration: "Someone you have been chatting with online asks for private information and threatens to stop talking if you refuse.",
         speaker: { role: "Online Contact (Ghost99)", line: "If you can’t even share your socials and location, why are we even talking?" },
         introExpression: "pressuring",
-        question: "An online contact demands your personal contact details and student IDs, threatening to cut ties if you don't comply. What would you do?",
+        question: "Someone you’ve been chatting with online asks you to share private information and says they’ll stop talking to you if you refuse. What would you do?",
         options: [
-          { id: "a3-a", text: "Offer partial info—like a secondary account—to appease them without giving everything away.", isBest: false, outcome: { expression: "pleased", text: "They have a partial foot in the door and continue pushing for more. Boundaries are harder to reset once compromised." }, whyNot: "Partial concessions signal that pressure works, escalating entitlement and demands." },
-          { id: "a3-b", text: "Refuse firmly. If they escalate or turn coercive, document the chat, block them, and seek guidance from campus support or someone you trust.", isBest: true, outcome: { expression: "neutral", text: "You cut off the avenue for coercion and protect your privacy." } },
-          { id: "a3-c", text: "Share your details on the condition that they keep them strictly between the two of you.", isBest: false, outcome: { expression: "pleased", text: "Once shared digitally, you lose control over where your personal data goes." }, whyNot: "Digital data transmission cannot be reversed or protected purely by informal promises." }
+          { id: "a3-a", text: "Give them a little information so they stay interested, but not all of it.", isBest: false, outcome: { expression: "pleased", text: "Even partial information can give someone a foothold to keep pressuring you." }, whyNot: "A gives in to pressure." },
+          { id: "a3-b", text: "Refuse. If they keep pressuring or threaten you, keep the messages, block them and tell a trusted adult.", isBest: true, outcome: { expression: "neutral", text: "You protect your privacy and create a record in case you need support." } },
+          { id: "a3-c", text: "Share it, but ask them not to tell anyone.", isBest: false, outcome: { expression: "pleased", text: "You cannot control what happens to information once it is shared." }, whyNot: "C gives in to pressure, and a promise cannot guarantee privacy." }
         ],
-        explanation: "Personal identifiers, addresses, and private handles should never be surrendered under coercive ultimatums. Strict digital privacy is vital for personal safety.",
-        takeaway: "Never yield personal data or location under digital pressure.",
-        showSupportPanel: true
+        explanation: "Personal information should never be shared under pressure. Protecting your privacy and getting trusted support are the right responses.",
+        takeaway: "Never share private information because someone pressures you."
       },
       {
         id: "a4", number: 4, topic: "Relationship pressure", scene: "quiet-cafe",
-        narration: "Someone you are seeing is pressuring you into a relationship decision or physical intimacy before you feel ready.",
+        narration: "Someone close to you is pressuring you to make a decision before you feel ready.",
         speaker: { role: "Partner (Ryan)", line: "If you were truly committed to us, you wouldn’t hesitate so much." },
         introExpression: "concerned",
-        question: "A partner or person you're dating pressures you to take a step you're not ready for, claiming your hesitation proves a lack of care. What would you do?",
+        question: "Someone close to you keeps pressuring you to make a decision you’re not ready for. They say that if you cared about them, you’d agree. What would you do?",
         options: [
-          { id: "a4-a", text: "Give in for now to de-escalate the tension, hoping to revisit the conversation later.", isBest: false, outcome: { expression: "pleased", text: "The immediate conflict ends, but a precedent of coerced compliance is set." }, whyNot: "Sacrificing personal readiness to appease a partner establishes a dangerous imbalance." },
-          { id: "a4-b", text: "Ask for a specific deadline to make up your mind so they stop bringing it up every day.", isBest: false, outcome: { expression: "neutral", text: "You've put an arbitrary countdown on your comfort, turning personal consent into an obligation." }, whyNot: "Commitment and intimacy should develop naturally, never under an arbitrary deadline." },
-          { id: "a4-c", text: "Communicate that readiness is personal and cannot be rushed. If the pressure continues, seek perspective from a campus counsellor or trusted mentor.", isBest: true, outcome: { expression: "thoughtful", text: "You assert that genuine care respects pace and autonomy." } }
+          { id: "a4-a", text: "Agree for now so the argument ends, and talk about it again later.", isBest: false, outcome: { expression: "pleased", text: "Agreeing under pressure does not resolve the problem or protect your choice." }, whyNot: "A gives in to avoid conflict." },
+          { id: "a4-b", text: "Ask them to give you a deadline so you can decide by then.", isBest: false, outcome: { expression: "neutral", text: "A deadline adds pressure to a decision that should be made at your own pace." }, whyNot: "B adds a deadline, which is more pressure." },
+          { id: "a4-c", text: "Tell them you’re not ready and that you’ll decide when you are. If they keep pushing, talk to someone you trust.", isBest: true, outcome: { expression: "thoughtful", text: "You protect your pace and make space for trusted support if the pressure continues." } }
         ],
-        explanation: "Intimacy and relationship steps require uncoerced consent and mutual respect. Guilt-tripping is an emotional pressure tactic that has no place in healthy dating.",
-        takeaway: "Emotional pressure is not affection; healthy relationships respect consent and pacing."
+        explanation: "Care and affection should never be used to pressure someone. You can make decisions at your own pace.",
+        takeaway: "Healthy care respects your pace and your decisions."
       },
       {
         id: "a5", number: 5, topic: "Sexual health misinformation", scene: "social-feed",
-        narration: "A viral student forum post claims an herbal tonic cures an STI, supported by dozens of enthusiastic anonymous testimonials.",
+        narration: "You see a social media post claiming a home remedy can cure an STI, supported by enthusiastic comments.",
         speaker: { role: "Forum Poster (@herbdoc)", line: "Guys, this natural supplement completely cleared my symptoms in 3 days! Don't waste money at the clinic." },
         introExpression: "pressuring",
         question: "You come across viral claims on social media advocating an unverified home remedy for an STI, backed by popular testimonials. What would you do?",
         options: [
-          { id: "a5-a", text: "Disregard social media claims and consult a registered health professional or university health centre.", isBest: true, outcome: { expression: "thoughtful", text: "Evidence-based clinical care ensures accurate diagnosis, correct antimicrobial treatment, and confidential care." } },
-          { id: "a5-b", text: "Try the remedy first if it seems harmless, only visiting a clinic if symptoms worsen.", isBest: false, outcome: { expression: "neutral", text: "Untreated or masked STI symptoms can lead to severe reproductive health complications." }, whyNot: "Delaying evidence-based treatment allows infections to progress asymptomatically to higher-risk stages." },
-          { id: "a5-c", text: "DM the original poster to ask about their dosage and specific symptoms before deciding.", isBest: false, outcome: { expression: "pleased", text: "Anecdotes from strangers are no substitute for clinical diagnostics and medical lab tests." }, whyNot: "Unregulated supplements and anonymous testimonials lack clinical testing and safety oversight." }
+          { id: "a5-a", text: "Check reliable medical sources and ask a healthcare professional, because online stories can’t tell you whether something works or is safe.", isBest: true, outcome: { expression: "thoughtful", text: "Evidence-based advice and proper care are safer than online testimonials." } },
+          { id: "a5-b", text: "Try it, but only if it seems safe, and stop if it doesn’t work.", isBest: false, outcome: { expression: "neutral", text: "A home remedy could delay proper testing and treatment." }, whyNot: "B risks delaying real treatment." },
+          { id: "a5-c", text: "Message the commenters to ask exactly what they used.", isBest: false, outcome: { expression: "pleased", text: "More unverified advice is still not a substitute for professional care." }, whyNot: "C seeks more unverified advice." }
         ],
-        explanation: "Reproductive health conditions require clinical laboratory verification and registered medical management. Social platforms often propagate harmful medical folklore.",
-        takeaway: "Rely on qualified healthcare practitioners, not viral anecdotes, for sexual health."
+        explanation: "Testimonials and home remedies are no substitute for evidence-based medical advice and proper treatment.",
+        takeaway: "For sexual health, rely on qualified healthcare professionals."
       },
       {
         id: "a6", number: 6, topic: "Witnessing sexual harassment", scene: "shopping-mall",
-        narration: "In a campus transit terminal or shopping concourse, an individual is persistently making graphic, unwanted remarks to a fellow student who looks visibly distressed.",
+        narration: "In a public place, someone repeatedly makes unwanted sexual comments to another person who looks uncomfortable.",
         speaker: { role: "Harasser", line: "Don't ignore me—give me your number or tell me where you're going." },
         introExpression: "pressuring",
         question: "You witness someone being subjected to persistent, unwanted sexual remarks in a public area, and they appear intimidated. What would you do?",
         options: [
-          { id: "a6-a", text: "Confront the harasser aggressively in public to shame them, regardless of potential physical risk.", isBest: false, outcome: { expression: "concerned", text: "A direct confrontation may escalate into physical hostility, creating danger for both you and the target." }, whyNot: "Direct aggressive intervention can provoke volatile or violent retaliation in public concourses." },
-          { id: "a6-b", text: "Use bystander intervention safely: create a distraction, ask the student for directions ('Are you okay?'), or alert venue security.", isBest: true, outcome: { expression: "pleased", text: "You defused the isolation safely without escalating physical risk." } },
-          { id: "a6-c", text: "Look away and keep walking since getting involved might make you the next target.", isBest: false, outcome: { expression: "uneasy", text: "The target is left isolated in a vulnerable and threatening situation." }, whyNot: "Passive bystander apathy leaves targets of harassment unprotected and deeply isolated." }
+          { id: "a6-a", text: "Confront the person loudly in front of everyone, even if it doesn’t feel safe.", isBest: false, outcome: { expression: "concerned", text: "A confrontation could escalate and put you or the affected person at risk." }, whyNot: "A could put you at risk and escalate things." },
+          { id: "a6-b", text: "If it’s safe, check in with the person or stay near them, and tell a staff member or someone responsible.", isBest: true, outcome: { expression: "pleased", text: "You offer support while thinking about safety and involving someone who can help." } },
+          { id: "a6-c", text: "Say nothing at the time and talk about it with friends afterwards.", isBest: false, outcome: { expression: "uneasy", text: "The person is left without support when they may need it." }, whyNot: "C leaves the person without help when it matters." }
         ],
-        explanation: "Indirect de-escalation, conversational distraction, and alerting staff or security empower bystanders to break predatory isolation safely.",
-        takeaway: "Active, safe bystander intervention de-escalates harassment without unnecessary escalation."
+        explanation: "Bystanders can help discourage harassment. Think about your own safety and what the affected person wants.",
+        takeaway: "Help safely, without putting yourself or others at greater risk."
       },
       {
         id: "a7", number: 7, topic: "Uncertainty about healthcare", scene: "clinic-reception",
-        narration: "You've noticed persistent reproductive health symptoms, but find yourself hesitating outside a health centre, unsure if it's 'appropriate' to make an appointment.",
+        narration: "You have a reproductive health concern that has bothered you for a while, but you are unsure whether it is serious enough for a clinic.",
         speaker: { role: "Triage Receptionist", line: "Good morning. Are you checking in for a routine wellness screening or a consultation today?" },
         introExpression: "neutral",
-        question: "You have a sexual health concern you're hesitant to get checked, wondering if it's too trivial or embarrassing to consult a doctor about. What would you do?",
+        question: "You have a reproductive health concern that has bothered you for a while, but you’re not sure it’s serious enough for a clinic. What would you do?",
         options: [
-          { id: "a7-a", text: "Hold off for a month to see if your immune system resolves it on its own.", isBest: false, outcome: { expression: "concerned", text: "Delaying medical consultation risks complications and prolonged anxiety." }, whyNot: "Waiting prolongs psychological stress and risks simple conditions evolving into severe clinical issues." },
-          { id: "a7-b", text: "Rely on symptom-checker forums and self-medicate with over-the-counter creams.", isBest: false, outcome: { expression: "neutral", text: "Self-treatment without diagnosis often masks infections or causes adverse reactions." }, whyNot: "Over-the-counter self-medication can disrupt natural flora and obscure underlying pathology." },
-          { id: "a7-c", text: "Book a consultation with a healthcare provider. Medical professionals routinely address these concerns in complete confidentiality.", isBest: true, outcome: { expression: "pleased", text: "The clinic staff assist you professionally. Reproductive health check-ups are standard medical practice." } }
+          { id: "a7-a", text: "Wait a few more weeks to see if it goes away by itself.", isBest: false, outcome: { expression: "concerned", text: "Waiting could delay care and leave you worrying longer." }, whyNot: "A delays care." },
+          { id: "a7-b", text: "Search your symptoms online and treat whatever the websites suggest.", isBest: false, outcome: { expression: "neutral", text: "Online searches cannot replace an assessment by a qualified professional." }, whyNot: "B relies on unverified information." },
+          { id: "a7-c", text: "Book an appointment with a qualified healthcare professional and explain your concerns. Ask about confidentiality when you book.", isBest: true, outcome: { expression: "pleased", text: "You get a proper assessment and can ask about confidential, youth-friendly care." } }
         ],
-        explanation: "Clinical consultations are professional, non-judgmental, and legally bound by medical confidentiality. No health question is too minor or invalid to bring forward.",
-        takeaway: "You don't need a severe emergency to seek routine, confidential sexual health advice.",
+        explanation: "Healthcare professionals can assess concerns and recommend care. You don’t need to diagnose yourself first, and you can ask about confidentiality when you book.",
+        takeaway: "You do not need to be sure it is serious before asking for care.",
         resourceSlot: "clinic"
       },
       {
         id: "a8", number: 8, topic: "Pressure to keep a secret", scene: "campus-bench",
-        narration: "Sitting on a campus bench after hours, a friend confides that they are being harassed and threatened by an ex-partner, but begs you to swear total secrecy.",
+        narration: "Someone tells you they are being pressured into an uncomfortable situation but asks you not to tell anyone, even though they may be unsafe.",
         speaker: { role: "Friend (Maya)", line: "Please promise me you won’t mention this to anyone. Swear you’ll take it to the grave." },
         introExpression: "concerned",
-        question: "A close friend reveals they are in an unsafe, coercive situation, but begs you never to tell a soul. What would you do?",
+        question: "Someone tells you they’re being pressured into an uncomfortable situation but asks you not to tell anyone, even though they may be unsafe. What would you do?",
         options: [
-          { id: "a8-a", text: "Validate their feelings and support them, but explain gently that you cannot promise secrecy if their safety is in jeopardy. Offer to accompany them to student services or a professional counsellor.", isBest: true, outcome: { expression: "thoughtful", text: "You balance emotional solidarity with practical safety, opening the door to qualified support without breaking trust behind their back." } },
-          { id: "a8-b", text: "Give a solemn promise to stay silent so they feel validated, planning to carry the burden alone.", isBest: false, outcome: { expression: "uneasy", text: "You shoulder an unmanageable crisis alone while your friend remains in potential danger." }, whyNot: "Pledging total silence traps a friend in an unmonitored risk environment beyond your capacity to resolve." },
-          { id: "a8-c", text: "Immediately tell mutual friends so you can form a group to monitor them.", isBest: false, outcome: { expression: "concerned", text: "Spreading sensitive disclosures across peer groups breaches trust and can worsen the friend's vulnerability." }, whyNot: "Broadcasting confidential safety disclosures can provoke retaliation or revictimize the individual." }
+          { id: "a8-a", text: "Listen without judging and thank them for telling you. Explain you can’t promise secrecy if they might be unsafe, and offer to go with them to a trusted adult.", isBest: true, outcome: { expression: "thoughtful", text: "You respect their trust while helping them reach appropriate support." } },
+          { id: "a8-b", text: "Promise to keep it secret now, then decide later whether to tell someone.", isBest: false, outcome: { expression: "uneasy", text: "A promise of secrecy can make it harder to get help if the danger grows." }, whyNot: "B breaks trust if you later tell someone and delays support now." },
+          { id: "a8-c", text: "Tell their friends so they can look out for them.", isBest: false, outcome: { expression: "concerned", text: "Sharing private information widely could make the situation worse." }, whyNot: "C spreads private information and may make things worse for them." }
         ],
-        explanation: "Empathetic support does not mean taking on unmanageable risks alone. When physical safety or stalking is involved, facilitating professional support is essential.",
-        takeaway: "Never pledge unconditional silence when someone's physical or mental safety is on the line.",
+        explanation: "Respect their privacy, but don’t promise secrecy when someone’s safety may be at risk. Help them reach appropriate support. If someone is in immediate danger, contact [local emergency number].",
+        takeaway: "Safety matters more than keeping an unsafe secret.",
         resourceSlot: "emergency",
         showSupportPanel: true
       },
       {
         id: "a9", number: 9, topic: "Experiencing discrimination", scene: "clinic-desk",
-        narration: "At a local clinic, you ask about contraception and STI testing. The attending staff member responds with condescending remarks about your age and marital status.",
+        narration: "You ask a healthcare worker a sexual health question and feel judged because of your age.",
         speaker: { role: "Clinic Staff", line: "Students your age shouldn't even be asking for these services. Focus on your studies." },
         introExpression: "pressuring",
-        question: "You consult a medical clinic for reproductive healthcare and encounter judgmental or moralising comments from the healthcare worker. What would you do?",
+        question: "You visit a healthcare facility to ask a sexual health question and feel the staff member is judging you because of your age. What would you do?",
         options: [
-          { id: "a9-a", text: "Endure the reprimand quietly, assuming patients have no right to question healthcare workers.", isBest: false, outcome: { expression: "neutral", text: "You leave feeling alienated, with valid health needs unaddressed." }, whyNot: "Accepting moral gatekeeping allows institutional bias to compromise patient well-being." },
-          { id: "a9-b", text: "Politely request to consult another doctor or seek out a youth-friendly, non-judgmental healthcare service (such as SHY network clinics).", isBest: true, outcome: { expression: "surprised", text: "You advocate for your rights as a patient. Healthcare is a basic right, not a moral trial." } },
-          { id: "a9-c", text: "Walk out and resolve never to seek reproductive medical care again.", isBest: false, outcome: { expression: "uneasy", text: "A bad experience with one biased practitioner shouldn't cut you off from essential healthcare." }, whyNot: "Disengaging from all healthcare penalizes your own long-term health rather than addressing provider bias." }
+          { id: "a9-a", text: "Accept it quietly. Staff know best, and speaking up could make things awkward.", isBest: false, outcome: { expression: "neutral", text: "You leave without the respectful care and information you deserve." }, whyNot: "A accepts poor treatment." },
+          { id: "a9-b", text: "Politely ask to speak with another qualified professional, or look for a youth-friendly service. You deserve respectful care.", isBest: true, outcome: { expression: "surprised", text: "You advocate for yourself and find care that treats you with dignity." } },
+          { id: "a9-c", text: "Leave and decide never to seek health advice again.", isBest: false, outcome: { expression: "uneasy", text: "One judgmental experience should not stop you from getting care." }, whyNot: "C means you miss out on care you need." }
         ],
-        explanation: "Every adult has the right to respectful, ethical, and evidence-based reproductive care. If a clinician displays bias, seek alternative providers or designated youth services.",
-        takeaway: "You are entitled to dignified, non-judgmental healthcare. You can always seek a second provider.",
+        explanation: "Young people deserve respectful, non-judgemental healthcare. You can ask for another provider if you feel uncomfortable.",
+        takeaway: "You deserve dignified, non-judgemental healthcare.",
         resourceSlot: "clinic"
       },
       {
         id: "a10", number: 10, topic: "Meeting someone from online", scene: "messaging-world",
-        narration: "An attractive connection you met on a social app asks you to meet at an unfamiliar, isolated location late at night, insisting you tell nobody.",
+        narration: "Someone you have been chatting with online asks to meet in person, just the two of you, and says not to tell anyone.",
         speaker: { role: "Online Contact (MysticX)", line: "Let’s meet up tonight off-campus. Just the two of us—don't tell your housemates, I want it to be private." },
         introExpression: "pressuring",
-        question: "An online contact asks to meet you in person for the first time in an isolated setting, insisting you keep the meeting completely secret. What would you do?",
+        question: "Someone you’ve been chatting with online for a few weeks asks to meet in person, just the two of you, and says not to tell anyone. What would you do?",
         options: [
-          { id: "a10-a", text: "Agree to meet, but propose a semi-private spot nearby so they don't feel distrusted.", isBest: false, outcome: { expression: "pleased", text: "Compromising on privacy when someone insists on secrecy still leaves you vulnerable." }, whyNot: "Conceding to secretive meetings outside transparent public spaces compromises basic physical safety." },
-          { id: "a10-b", text: "Do a quick video call first to verify their face, then go along with the private meetup.", isBest: false, outcome: { expression: "pleased", text: "Identity verification alone does not guarantee physical safety in an isolated, unmonitored location." }, whyNot: "Screen verification confirms appearance, not intentions or situational security in seclusion." },
-          { id: "a10-c", text: "Decline any invitation conditioned on secrecy. Insist on a well-lit public venue during daytime, notify a trusted friend of your whereabouts, and keep personal addresses private.", isBest: true, outcome: { expression: "thoughtful", text: "You establish responsible personal safety standards without apology." } }
+          { id: "a10-a", text: "Agree, but pick a busy café and keep it secret so they don’t get upset.", isBest: false, outcome: { expression: "pleased", text: "Going along with secrecy still leaves you isolated from people who could help keep you safe." }, whyNot: "A goes along with the secrecy." },
+          { id: "a10-b", text: "Agree, but ask for a video call first to check they’re real.", isBest: false, outcome: { expression: "pleased", text: "A video call does not make a secret in-person meeting safe." }, whyNot: "B goes along with secrecy, and a video call cannot guarantee safety." },
+          { id: "a10-c", text: "Say no to meeting in secret, tell a trusted adult about the request, and don’t share your location.", isBest: true, outcome: { expression: "thoughtful", text: "You recognise the warning sign and protect your location and personal safety." } }
         ],
-        explanation: "Conditional secrecy and demands for unmonitored secluded meetings are major red flags. Transparent public environments and buddy check-ins protect your physical safety.",
-        takeaway: "Any insistence on secrecy or isolation is an immediate red flag for your safety.",
+        explanation: "Being asked to keep a meeting secret is a warning sign. Telling a trusted adult is the safe step, and your location and school should stay private.",
+        takeaway: "Secrecy and isolation are warning signs—tell a trusted adult.",
         showSupportPanel: true
       }
     ];
@@ -709,8 +757,8 @@
             <rect x="70" y="65" width="260" height="105" rx="10" fill="#FFFFFF" stroke="#2B2350" stroke-width="3"/>
             <rect x="90" y="98" width="36" height="36" rx="6" fill="#4DEBE3" stroke="#2B2350" stroke-width="2"/>
             <path d="M108 105 L108 127 M97 116 L119 116" stroke="#2B2350" stroke-width="3.5" stroke-linecap="round"/>
-            <text x="215" y="112" font-size="15" font-weight="900" fill="#2B2350">UNIVERSITY CLINIC</text>
-            <text x="215" y="130" font-size="11.5" font-weight="bold" fill="#2B2350">Confidential Care Desk</text>
+            <text x="200" y="112" font-size="15" font-weight="900" text-anchor="middle" fill="#2B2350">UNIVERSITY CLINIC</text>
+            <text x="200" y="130" font-size="11.5" font-weight="bold" text-anchor="middle" fill="#2B2350">Confidential Care Desk</text>
             <rect x="0" y="355" width="960" height="185" fill="#CFEDE6" stroke="#2B2350" stroke-width="3"/>
             <rect x="290" y="275" width="430" height="90" rx="8" fill="#FFFFFF" stroke="#2B2350" stroke-width="3.5"/>
             <rect x="310" y="295" width="110" height="10" rx="4" fill="#B9A5F5"/>
@@ -1284,9 +1332,6 @@
                       “${sc.speaker.line}”
                     </span>
                   ` : ''}
-                  <span class="text-[11px] sm:text-xs text-[#2B2350]/75 font-medium italic hidden md:inline ml-auto">
-                    ${sc.question}
-                  </span>
                 </div>
 
                 <!-- Sleek Horizontal / 3-Column Choices Deck -->
@@ -1383,11 +1428,19 @@
               </div>
             </div>
 
-            <div class="space-y-2.5 sm:space-y-3 mb-4 text-[#2B2350]">
-              <div class="p-3 rounded-xl bg-white border-2 border-[#2B2350]/25">
-                <span class="text-[11px] font-black uppercase text-[#2B2350]/60 block mb-0.5">Key Insight</span>
-                <p class="text-xs sm:text-sm md:text-base font-semibold leading-relaxed">${sc.explanation}</p>
+            <div class="learning-scene relative overflow-hidden rounded-2xl border-3 border-[#2B2350] mb-4 text-[#2B2350]">
+              <div class="learning-scene-art">
+                ${getSceneBackdropSVG(sc.scene, opt.outcome.expression)}
               </div>
+              <div class="learning-scene-copy relative z-10 m-3 rounded-xl border-3 border-[#2B2350] p-3 sm:p-4 shadow-xl">
+                <span class="inline-flex items-center gap-1.5 rounded-lg bg-[#4DEBE3] px-2 py-1 text-[11px] font-black uppercase border-2 border-[#2B2350]">
+                  <span aria-hidden="true">✦</span> Why this matters
+                </span>
+                <p class="mt-2 text-base sm:text-lg md:text-xl font-black leading-snug">${sc.explanation}</p>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 sm:space-y-3 mb-4 text-[#2B2350]">
 
               ${(!isBest && bestOpt) ? `
                 <div class="p-3 rounded-xl bg-[#4DEBE3]/20 border-2 border-[#2B2350]/25">

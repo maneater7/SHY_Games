@@ -124,17 +124,28 @@ export function PovGame({ onEvent, onExitToHub }: PovGameProps) {
             <p className="text-xs font-semibold">Sexual Health for Youth</p>
           </div>
         </div>
-        {phase.name !== "welcome" && (
+        {onExitToHub && (
           <button
             type="button"
             onClick={() => {
-              dispatch({ type: "exit" });
+              if (phase.name !== "welcome") {
+                dispatch({ type: "exit" });
+              }
               onExitToHub?.();
             }}
             className={secondaryButton}
           >
-            <LogOut className="h-4 w-4" aria-hidden="true" />
-            Exit
+            {phase.name === "welcome" ? (
+              <>
+                <LogOut className="h-4 w-4 rotate-180" aria-hidden="true" />
+                Games Hub
+              </>
+            ) : (
+              <>
+                <LogOut className="h-4 w-4" aria-hidden="true" />
+                Exit
+              </>
+            )}
           </button>
         )}
       </header>
