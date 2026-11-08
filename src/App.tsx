@@ -1,7 +1,20 @@
+import { useState } from "react";
+import { GamesHub, type GameId } from "@/components/GamesHub";
+import { GameFrame } from "@/components/GameFrame";
 import { PovGame } from "@/components/game/PovGame";
 
 function App() {
-  return <PovGame />;
+  const [selectedGame, setSelectedGame] = useState<GameId | null>(null);
+
+  if (selectedGame === "game1") {
+    return <PovGame onExitToHub={() => setSelectedGame(null)} />;
+  }
+
+  if (selectedGame === "game3" || selectedGame === "game4") {
+    return <GameFrame gameId={selectedGame} onBack={() => setSelectedGame(null)} />;
+  }
+
+  return <GamesHub onSelectGame={setSelectedGame} />;
 }
 
 export default App;

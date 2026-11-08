@@ -14,6 +14,7 @@ import { submitGameResults } from "@/lib/analytics";
 
 interface PovGameProps {
   onEvent?: (event: GameEvent) => void;
+  onExitToHub?: () => void;
 }
 
 function segmentsFor(state: GameState, current: number): TrailSegment[] {
@@ -25,7 +26,7 @@ function segmentsFor(state: GameState, current: number): TrailSegment[] {
   });
 }
 
-export function PovGame({ onEvent }: PovGameProps) {
+export function PovGame({ onEvent, onExitToHub }: PovGameProps) {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState);
   const hasSubmittedRef = useRef(false);
   const { phase } = state;
@@ -124,7 +125,14 @@ export function PovGame({ onEvent }: PovGameProps) {
           </div>
         </div>
         {phase.name !== "welcome" && (
-          <button type="button" onClick={() => dispatch({ type: "exit" })} className={secondaryButton}>
+          <button
+            type="button"
+            onClick={() => {
+              dispatch({ type: "exit" });
+              onExitToHub?.();
+            }}
+            className={secondaryButton}
+          >
             <LogOut className="h-4 w-4" aria-hidden="true" />
             Exit
           </button>

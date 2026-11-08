@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SHY — Red Flag or Green Flag? The Duck Pond</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Lucide Icons CDN -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+    :root {
+      --color-pond-water: #B6F0EB;
+      --color-pond-deep: #7CE0D7;
+      --color-brand-turquoise: #4DEBE3;
+      --color-brand-lavender: #B9A5F5;
+      --color-brand-pink: #F7B8D0;
+      --color-brand-peach: #FFE0A8;
+      --color-brand-cream: #FFF8ED;
+      --color-wood: #E6C280;
+      --color-wood-dark: #BA8B4B;
+      --color-flag-green: #86E0AE;
+      --color-flag-yellow: #FFD95A;
+      --color-flag-red: #FF8F80;
+      --color-ink: #2B2350;
+    }
+
+    body {
+      font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #8CE2D7;
+      background-image: 
+        radial-gradient(ellipse at 50% 10%, #D4F9F3 0%, #A3EAE1 50%, #68D1C5 100%),
+        linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 60%);
+      color: #2B2350;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    .text-ink { color: #2B2350 !important; }
+    .bg-ink { background-color: #2B2350; }
+    .border-ink { border-color: #2B2350; }
+
+    /* Chunky Early-2000s Game Board & Sticker Shadows */
+    .brutal-shadow-sm { box-shadow: 2px 2px 0px #2B2350; }
+    .brutal-shadow { box-shadow: 4px 4px 0px #2B2350; }
+    .brutal-shadow-lg { box-shadow: 6px 6px 0px #2B2350; }
+    .brutal-shadow-xl { box-shadow: 8px 8px 0px #2B2350; }
+    .brutal-inset-sm { box-shadow: inset 2px 2px 0px #2B2350; }
+
+    /* Wooden Plank Texture and Borders */
+    .wooden-plank {
+      background-color: #F8D595;
+      background-image: repeating-linear-gradient(90deg, rgba(186,139,75,0.12) 0px, rgba(186,139,75,0.12) 18px, transparent 18px, transparent 36px);
+      border: 3.5px solid #2B2350;
+    }
+
+    /* Chunky Arcade / Virtual Pet Buttons */
+    .btn-arcade {
+      border: 3.5px solid #2B2350;
+      box-shadow: 4px 4px 0px #2B2350;
+      transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .btn-arcade::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 8px; right: 8px;
+      height: 38%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+    .btn-arcade:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 5px 5px 0px #2B2350;
+    }
+    .btn-arcade:active:not(:disabled) {
+      transform: translate(2px, 2px) scale(0.98);
+      box-shadow: 1px 1px 0px #2B2350;
+    }
+
+    /* Water Animations */
+    @keyframes pond-ripple {
+      0%, 100% { transform: scale(1) translateY(0); opacity: 0.75; }
+      50% { transform: scale(1.05) translateY(-3px); opacity: 0.95; }
+    }
+    .animate-pond-ripple {
+      animation: pond-ripple 4s ease-in-out infinite;
+    }
+
+    @keyframes reeds-sway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(4deg); }
+    }
+    .animate-reeds-left {
+      animation: reeds-sway 3.8s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    .animate-reeds-right {
+      animation: reeds-sway 4.2s ease-in-out infinite reverse;
+      transform-origin: bottom center;
+    }
+
+    @keyframes dragonfly-hover {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(8px, -6px) rotate(3deg); }
+      50% { transform: translate(-4px, -10px) rotate(-3deg); }
+      75% { transform: translate(6px, -4px) rotate(2deg); }
+    }
+    .animate-dragonfly {
+      animation: dragonfly-hover 5s ease-in-out infinite;
+    }
+
+    /* Duck Character Animations */
+    @keyframes duck-float-happy {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-4px) rotate(2deg); }
+    }
+    .duck-float-green {
+      animation: duck-float-happy 3.2s ease-in-out infinite;
+    }
+
+    @keyframes duck-float-curious {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-4px) rotate(-3deg); }
+    }
+    .duck-float-yellow {
+      animation: duck-float-curious 3.6s ease-in-out infinite;
+    }
+
+    @keyframes duck-float-protect {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-4px) rotate(1.5deg); }
+    }
+    .duck-float-red {
+      animation: duck-float-protect 3.4s ease-in-out infinite;
+    }
+
+    @keyframes duck-eye-blink {
+      0%, 92%, 96%, 100% { transform: scaleY(1); }
+      94% { transform: scaleY(0.1); }
+    }
+    .duck-eye-blink {
+      animation: duck-eye-blink 4.2s infinite;
+      transform-origin: center;
+    }
+
+    @keyframes flag-wave {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(6deg) translateY(-1px); }
+    }
+    .animate-flag-wave {
+      animation: flag-wave 2.2s ease-in-out infinite;
+      transform-origin: bottom left;
+    }
+
+    @keyframes duck-hop {
+      0% { transform: scale(1) translateY(0); }
+      30% { transform: scale(1.15, 0.88) translateY(4px); }
+      60% { transform: scale(0.95, 1.1) translateY(-12px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+    .animate-duck-hop {
+      animation: duck-hop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Trading Card Mechanics */
+    .card-scene {
+      perspective: 1000px;
+    }
+    .pond-trading-card {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      touch-action: none;
+      user-select: none;
+    }
+    .pond-trading-card.card-dragging {
+      opacity: 0.85;
+      transform: translate3d(var(--drag-x, 0px), var(--drag-y, 0px), 0) scale(0.97) rotate(2deg) !important;
+      cursor: grabbing !important;
+      z-index: 50 !important;
+      box-shadow: 8px 12px 0px #2B2350 !important;
+      will-change: transform;
+    }
+
+    /* Drop Zone / Duck Station Personalities */
+    .duck-dock-station {
+      border: 3.5px solid #2B2350;
+      box-shadow: 4px 4px 0px #2B2350;
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease, background-color 0.18s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .duck-dock-station:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 6px 7px 0px #2B2350;
+    }
+    .duck-dock-station:active {
+      transform: translateY(1px);
+      box-shadow: 2px 2px 0px #2B2350;
+    }
+    .duck-dock-station.drop-target-active {
+      transform: translateY(-8px) scale(1.05) !important;
+      box-shadow: 8px 10px 0px #2B2350 !important;
+      outline: 4px dashed #2B2350 !important;
+      outline-offset: 3px !important;
+    }
+
+    /* Duck Rain Celebration Shower */
+    @keyframes rain-duck-fall {
+      0% {
+        opacity: 0;
+        transform: translateY(-40px) rotate(var(--fall-rot, 5deg)) scale(0.85);
+      }
+      15% { opacity: 1; }
+      80% {
+        opacity: 1;
+        transform: translateY(380px) rotate(var(--fall-rot-end, -6deg)) scale(1.05);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(420px) rotate(var(--fall-rot-end, -6deg)) scale(0.9);
+      }
+    }
+    .duck-rain-item {
+      animation: rain-duck-fall 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes branch-pop {
+      0% { opacity: 0; transform: scale(0.9) translateY(6px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-branch-pop {
+      animation: branch-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Custom Scrollbar for Collector Album */
+    ::-webkit-scrollbar { width: 9px; }
+    ::-webkit-scrollbar-track {
+      background: #FFE0A8;
+      border-radius: 9999px;
+      border: 2px solid #2B2350;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4DEBE3;
+      border: 2px solid #2B2350;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #B9A5F5; }
+
+    *:focus-visible {
+      outline: 3.5px solid #2B2350;
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .animate-pond-ripple, .animate-reeds-left, .animate-reeds-right, .animate-dragonfly,
+      .duck-float-green, .duck-float-yellow, .duck-float-red, .animate-flag-wave, .duck-eye-blink, .animate-duck-hop, .duck-rain-item {
+        animation: none !important;
+      }
+      .duck-rain-item { display: none !important; }
+    }
+</style>
+</head>
+<body class="flex flex-col min-h-screen text-ink antialiased selection:bg-[#4DEBE3] selection:text-[#2B2350] p-2 sm:p-4 md:p-6 justify-center items-center relative overflow-x-hidden">
+<!-- ================= POND SCENERY ENVIRONMENT ================= -->
+<div aria-hidden="true" class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+<!-- Puffy 2D Cloud Top Left -->
+<svg class="absolute -top-4 -left-8 w-48 h-28 opacity-80" viewbox="0 0 160 90">
+<path d="M20 70 C10 70 0 60 0 45 C0 30 15 25 25 25 C30 10 50 5 65 12 C75 0 105 0 115 15 C130 12 145 22 145 35 C155 40 160 52 150 65 C145 72 135 72 135 72 Z" fill="#FFFFFF" stroke="#2B2350" stroke-width="3"></path>
+</svg>
+<!-- Puffy 2D Cloud Top Right -->
+<svg class="absolute top-4 -right-6 w-52 h-32 opacity-75 hidden sm:block" viewbox="0 0 160 90">
+<path d="M25 70 C15 70 5 60 5 45 C5 30 20 25 30 25 C35 10 55 5 70 12 C80 0 110 0 120 15 C135 12 150 22 150 35 C160 40 165 52 155 65 C150 72 140 72 140 72 Z" fill="#FFFFFF" stroke="#2B2350" stroke-width="3"></path>
+</svg>
+<!-- Animated Dragonfly 1 -->
+<div class="absolute top-16 left-[12%] animate-dragonfly hidden md:block">
+<svg height="36" viewbox="0 0 40 36" width="40">
+<ellipse cx="20" cy="18" fill="#2B2350" rx="2" ry="12"></ellipse>
+<ellipse cx="11" cy="14" fill="#4DEBE3" rx="8" ry="3" stroke="#2B2350" stroke-width="1.5" transform="rotate(-15 11 14)"></ellipse>
+<ellipse cx="29" cy="14" fill="#4DEBE3" rx="8" ry="3" stroke="#2B2350" stroke-width="1.5" transform="rotate(15 29 14)"></ellipse>
+<ellipse cx="12" cy="19" fill="#B9A5F5" rx="7" ry="2.5" stroke="#2B2350" stroke-width="1.5" transform="rotate(-5 12 19)"></ellipse>
+<ellipse cx="28" cy="19" fill="#B9A5F5" rx="7" ry="2.5" stroke="#2B2350" stroke-width="1.5" transform="rotate(5 28 19)"></ellipse>
+<circle cx="19" cy="8" fill="#FFD95A" r="1.5"></circle>
+<circle cx="21" cy="8" fill="#FFD95A" r="1.5"></circle>
+</svg>
+</div>
+<!-- Reeds & Cattails - Left Shoreline -->
+<div class="absolute bottom-0 left-2 sm:left-6 animate-reeds-left hidden sm:block">
+<svg height="120" viewbox="0 0 60 120" width="60">
+<path d="M15 120 C10 80 5 50 2 20 C15 45 22 80 20 120" fill="#86E0AE" stroke="#2B2350" stroke-width="2.5"></path>
+<path d="M28 120 C32 75 42 45 52 15 C45 45 38 85 36 120" fill="#86E0AE" stroke="#2B2350" stroke-width="2.5"></path>
+<line stroke="#2B2350" stroke-width="3" x1="22" x2="20" y1="120" y2="25"></line>
+<rect fill="#BA8B4B" height="32" rx="3" stroke="#2B2350" stroke-width="2.2" width="6" x="17" y="25"></rect>
+<line stroke="#2B2350" stroke-width="2.5" x1="20" x2="20" y1="25" y2="16"></line>
+<line stroke="#2B2350" stroke-width="3" x1="38" x2="42" y1="120" y2="40"></line>
+<rect fill="#BA8B4B" height="28" rx="3" stroke="#2B2350" stroke-width="2.2" width="6" x="39" y="40"></rect>
+<line stroke="#2B2350" stroke-width="2.5" x1="42" x2="42" y1="40" y2="30"></line>
+</svg>
+</div>
+<!-- Reeds & Cattails - Right Shoreline -->
+<div class="absolute bottom-0 right-2 sm:right-6 animate-reeds-right hidden sm:block">
+<svg height="130" viewbox="0 0 65 130" width="65">
+<path d="M45 130 C50 85 58 55 60 25 C48 50 40 85 42 130" fill="#86E0AE" stroke="#2B2350" stroke-width="2.5"></path>
+<path d="M25 130 C18 80 10 50 4 20 C15 50 20 90 22 130" fill="#86E0AE" stroke="#2B2350" stroke-width="2.5"></path>
+<line stroke="#2B2350" stroke-width="3" x1="32" x2="30" y1="130" y2="30"></line>
+<rect fill="#BA8B4B" height="34" rx="3" stroke="#2B2350" stroke-width="2.2" width="6" x="27" y="30"></rect>
+<line stroke="#2B2350" stroke-width="2.5" x1="30" x2="30" y1="30" y2="20"></line>
+</svg>
+</div>
+</div>
+<!-- ================= THE DUCK POND GAME CABINET ================= -->
+<div class="w-full max-w-xl bg-[#FFF8ED] rounded-[36px] border-[4.5px] border-ink brutal-shadow-xl p-4 sm:p-5 relative flex flex-col min-h-[720px] transition-all overflow-hidden z-10" id="duck-pond-app">
+<!-- Decorative water accent bar at top -->
+<div class="absolute top-0 inset-x-0 h-3 bg-gradient-to-b from-[#4DEBE3]/35 to-transparent pointer-events-none rounded-t-[30px] z-30"></div>
+<!-- Duck Rain Celebration Container -->
+<div aria-hidden="true" class="absolute inset-0 pointer-events-none z-10 overflow-hidden" id="duck-rain-container"></div>
+<!-- ================= POND BOARD HEADER ================= -->
+<header class="flex items-center justify-between pb-3 mb-2.5 border-b-[3.5px] border-ink relative z-20">
+<div class="flex items-center gap-2.5">
+<div class="relative group">
+<span class="inline-flex items-center justify-center font-black tracking-widest text-xs px-3 py-1.5 rounded-xl bg-[#4DEBE3] border-[3px] border-ink text-ink brutal-shadow-sm uppercase">
+  SHY
+</span>
+<span class="absolute -top-1 -right-1 flex h-3 w-3">
+<span class="relative inline-flex rounded-full h-3 w-3 bg-[#FFD95A] border-2 border-ink"></span>
+</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="text-xs sm:text-sm font-black tracking-tight text-ink uppercase leading-none">Sexual Health for Youth</span>
+<span class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#FFE0A8] border-[1.5px] border-ink hidden sm:inline-flex items-center gap-1">
+<span>🦆</span> POND WORLD
+</span>
+</div>
+<span class="text-[10px] font-extrabold text-ink/75 leading-tight flex items-center gap-1 mt-0.5">
+<span>🪷</span> 10 Pond Exploration Scenarios <span>🪷</span>
+</span>
+</div>
+</div>
+<!-- Navigation Home Button -->
+<div id="header-exit-container">
+<button class="btn-arcade text-xs font-black px-3 py-1.5 rounded-xl bg-[#FFE0A8] text-ink flex items-center gap-1.5" id="btn-exit" title="Exit to Duck Pond Welcome" type="button">
+<i class="w-3.5 h-3.5 stroke-[2.5]" data-lucide="home"></i>
+<span>Exit to Pond</span>
+</button>
+</div>
+</header>
+<!-- ================= MAIN POND ARENA ================= -->
+<main class="flex-1 flex flex-col justify-between relative z-20" id="pond-viewport">
+<!-- ================= SCREEN 1: WELCOME SCREEN ================= -->
+<section class="flex flex-col items-center text-center justify-center my-auto py-1 hidden" id="screen-welcome">
+<!-- Banner with Three Duck Characters -->
+<div class="relative mb-3 mt-1 w-full max-w-md">
+<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-[#4DEBE3] border-[2.5px] border-ink rounded-full font-black text-[11px] uppercase tracking-wider brutal-shadow-sm z-30 flex items-center gap-1.5 text-ink">
+<span>✨</span> VIRTUAL POND WORLD <span>✨</span>
+</div>
+<div class="w-full bg-[#B6F0EB] rounded-3xl border-[3.5px] border-ink p-3 pt-5 pb-2.5 brutal-shadow-lg relative overflow-hidden">
+<svg class="absolute inset-0 w-full h-full opacity-40 pointer-events-none" preserveaspectratio="none" viewbox="0 0 400 120">
+<path d="M0 40 Q50 32 100 40 T200 40 T300 40 T400 40" fill="none" stroke="#2B2350" stroke-width="2"></path>
+<path d="M20 75 Q70 67 120 75 T220 75 T320 75 T420 75" fill="none" stroke="#2B2350" stroke-width="2"></path>
+</svg>
+<div class="grid grid-cols-3 gap-2 relative z-10 items-end">
+<!-- Duck 1: Pip -->
+<div class="flex flex-col items-center duck-float-green">
+<div class="relative">
+<svg height="74" viewbox="0 0 80 76" width="78">
+<ellipse cx="40" cy="68" fill="#86E0AE" rx="36" ry="7" stroke="#2B2350" stroke-width="2.5"></ellipse>
+<path d="M38 68 L48 64" stroke="#2B2350" stroke-width="2"></path>
+<ellipse cx="38" cy="46" fill="#FFE0A8" rx="20" ry="15" stroke="#2B2350" stroke-width="2.8"></ellipse>
+<path d="M28 47 Q36 38 42 47" fill="#FFD95A" stroke="#2B2350" stroke-width="2.4"></path>
+<circle cx="48" cy="28" fill="#FFE0A8" r="14" stroke="#2B2350" stroke-width="2.8"></circle>
+<path d="M48 14 C40 8 46 4 52 10 C56 6 62 10 54 15 Z" fill="#86E0AE" stroke="#2B2350" stroke-width="2"></path>
+<circle class="duck-eye-blink" cx="51" cy="26" fill="#2B2350" r="2.6"></circle>
+<circle cx="52.2" cy="24.8" fill="#FFFFFF" r="0.9"></circle>
+<path d="M59 27 Q68 30 63 34 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="2.2"></path>
+<g class="animate-flag-wave">
+<line stroke="#2B2350" stroke-linecap="round" stroke-width="3" x1="20" x2="20" y1="12" y2="58"></line>
+<polygon fill="#86E0AE" points="20,12 4,20 20,28" stroke="#2B2350" stroke-width="2.4"></polygon>
+<path d="M11 20 L13 22 L17 17" fill="none" stroke="#2B2350" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</g>
+</svg>
+</div>
+<div class="mt-1 px-2 py-0.5 rounded-lg bg-white border-[2px] border-ink font-black text-[10px] text-ink shadow-[1.5px_1.5px_0px_#2B2350]">
+  Pip (Green)
+</div>
+</div>
+<!-- Duck 2: Quill -->
+<div class="flex flex-col items-center duck-float-yellow">
+<div class="relative">
+<svg height="74" viewbox="0 0 80 76" width="78">
+<ellipse cx="40" cy="68" fill="#4DEBE3" rx="34" ry="7" stroke="#2B2350" stroke-width="2.5"></ellipse>
+<ellipse cx="42" cy="47" fill="#FFE0A8" rx="20" ry="15" stroke="#2B2350" stroke-width="2.8"></ellipse>
+<path d="M34 48 Q42 40 48 48" fill="#FFD95A" stroke="#2B2350" stroke-width="2.4"></path>
+<circle cx="34" cy="27" fill="#FFE0A8" r="14" stroke="#2B2350" stroke-width="2.8"></circle>
+<circle cx="28" cy="26" fill="none" r="4.5" stroke="#2B2350" stroke-width="2.2"></circle>
+<line stroke="#2B2350" stroke-width="2" x1="32.5" x2="35" y1="26" y2="26"></line>
+<circle class="duck-eye-blink" cx="28" cy="26" fill="#2B2350" r="2.2"></circle>
+<circle cx="29" cy="25" fill="#FFFFFF" r="0.8"></circle>
+<path d="M23 27 Q14 30 20 34 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="2.2"></path>
+<g class="animate-flag-wave">
+<line stroke="#2B2350" stroke-linecap="round" stroke-width="3" x1="58" x2="58" y1="10" y2="58"></line>
+<polygon fill="#FFD95A" points="58,10 74,18 58,26" stroke="#2B2350" stroke-width="2.4"></polygon>
+<text fill="#2B2350" font-family="system-ui" font-size="11" font-weight="900" x="63" y="21">?</text>
+</g>
+</svg>
+</div>
+<div class="mt-1 px-2 py-0.5 rounded-lg bg-white border-[2px] border-ink font-black text-[10px] text-ink shadow-[1.5px_1.5px_0px_#2B2350]">
+  Quill (Yellow)
+</div>
+</div>
+<!-- Duck 3: Barnaby -->
+<div class="flex flex-col items-center duck-float-red">
+<div class="relative">
+<svg height="74" viewbox="0 0 80 76" width="78">
+<ellipse cx="40" cy="68" fill="#F7B8D0" rx="34" ry="7" stroke="#2B2350" stroke-width="2.5"></ellipse>
+<ellipse cx="38" cy="46" fill="#FFE0A8" rx="20" ry="15" stroke="#2B2350" stroke-width="2.8"></ellipse>
+<path d="M28 44 Q38 38 46 48" fill="#FFD95A" stroke="#2B2350" stroke-width="2.4"></path>
+<circle cx="46" cy="27" fill="#FFE0A8" r="14" stroke="#2B2350" stroke-width="2.8"></circle>
+<circle class="duck-eye-blink" cx="49" cy="25" fill="#2B2350" r="2.5"></circle>
+<circle cx="50" cy="24" fill="#FFFFFF" r="0.8"></circle>
+<path d="M57 26 Q65 29 60 33 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="2.2"></path>
+<g class="animate-flag-wave">
+<line stroke="#2B2350" stroke-linecap="round" stroke-width="3" x1="22" x2="22" y1="10" y2="58"></line>
+<polygon fill="#FF8F80" points="22,10 6,18 22,26" stroke="#2B2350" stroke-width="2.4"></polygon>
+<text fill="#2B2350" font-family="system-ui" font-size="12" font-weight="900" x="12" y="21">!</text>
+</g>
+</svg>
+</div>
+<div class="mt-1 px-2 py-0.5 rounded-lg bg-white border-[2px] border-ink font-black text-[10px] text-ink shadow-[1.5px_1.5px_0px_#2B2350]">
+  Barnaby (Red)
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Plaque Title -->
+<div class="wooden-plank px-4 py-2 rounded-2xl brutal-shadow-sm mb-2.5 transform -rotate-0.5">
+<h1 class="text-xl sm:text-2xl font-black text-ink tracking-tight uppercase leading-tight">
+  Red Flag or <span class="bg-[#86E0AE] px-2 py-0.5 rounded-xl border-[2.5px] border-ink inline-block">Green Flag?</span>
+</h1>
+</div>
+<!-- Intro Text -->
+<p class="text-xs sm:text-sm font-bold text-ink/90 max-w-md mb-3 leading-relaxed bg-white/80 p-3 rounded-2xl border-[2.5px] border-ink brutal-shadow-sm text-left sm:text-center">
+  Welcome to the Duck Pond! Not every situation is as simple as it seems. Read each scenario and decide whether it’s a Green Flag, Yellow Flag or Red Flag. Some situations are healthy, some need a little more thought, and others are warning signs. Ready to test your instincts?
+</p>
+<!-- Content Notice Box -->
+<div class="w-full bg-[#FFE0A8] border-[2.5px] border-ink rounded-2xl p-3 text-xs text-ink font-bold leading-relaxed mb-4 text-left brutal-shadow-sm relative">
+<div class="flex items-center gap-1.5 font-black mb-1 text-ink uppercase tracking-wide">
+<span class="p-1 rounded-md bg-[#FFF8ED] border border-ink">
+<i class="w-3.5 h-3.5 stroke-[2.5]" data-lucide="shield-alert"></i>
+</span>
+<span>Content notice</span>
+</div>
+These situations touch on pressure, private pictures and online safety. You can skip any card, or leave at any time.
+</div>
+<!-- CTA -->
+<button class="btn-arcade w-full py-3 px-6 rounded-2xl bg-[#4DEBE3] text-ink font-black text-base uppercase tracking-wider flex items-center justify-center gap-2 group" id="btn-start" type="button">
+<span>Let’s Play!</span>
+<i class="w-5 h-5 stroke-[3] group-hover:translate-x-1.5 transition-transform" data-lucide="arrow-right"></i>
+</button>
+</section>
+<!-- ================= SCREEN 2: GAMEPLAY SCREEN ================= -->
+<section class="flex flex-col h-full flex-1 justify-between" id="screen-play">
+<!-- Progress bar & Skip Card -->
+<div class="wooden-plank p-2.5 rounded-2xl brutal-shadow-sm mb-2">
+<div class="flex items-center justify-between gap-2 mb-2">
+<span class="px-2.5 py-1 rounded-xl bg-white border-[2px] border-ink text-ink text-[11px] font-black uppercase tracking-wider brutal-shadow-sm flex items-center gap-1.5" id="progress-badge">
+<i class="w-3.5 h-3.5" data-lucide="layers"></i> Card 1 of 10
+    </span>
+<!-- Prominently rendered skip button -->
+<button class="btn-arcade text-[11px] font-black text-ink bg-[#FFE0A8] hover:bg-[#FFD95A] px-3 py-1.5 rounded-xl border-[2.5px] border-ink brutal-shadow-sm transition-all flex items-center gap-1.5 cursor-pointer z-30" id="btn-skip" title="Skip this scenario card" type="button">
+<span>Skip this card</span>
+<i class="w-3.5 h-3.5 stroke-[3]" data-lucide="skip-forward"></i>
+</button>
+</div>
+<!-- 10 Floating Pegs -->
+<div class="flex items-center justify-between gap-1 px-0.5" id="pegs-track"></div>
+</div>
+<!-- Drag/Tap Instructions Ribbon -->
+<div class="flex items-center justify-center gap-1.5 text-[10.5px] sm:text-xs text-center font-black uppercase tracking-wider text-ink bg-[#FFE0A8] py-1 px-3 rounded-xl border-[2px] border-ink shadow-[1px_1px_0px_#2B2350] mb-2">
+<span>👉 Drag card to a duck below, or click any flag station to sort</span>
+</div>
+<!-- ================= 3D COLLECTIBLE TRADING CARD ================= -->
+<div class="card-scene relative my-auto py-1 px-1 flex justify-center items-center">
+<div class="absolute inset-x-4 h-[90%] bg-[#B9A5F5] rounded-3xl border-[3px] border-ink transform -rotate-2 pointer-events-none opacity-80"></div>
+<div class="absolute inset-x-2 h-[94%] bg-[#4DEBE3] rounded-3xl border-[3px] border-ink transform rotate-1 pointer-events-none opacity-85"></div>
+<div aria-describedby="card-instruction" aria-grabbed="false" class="pond-trading-card relative w-full rounded-3xl border-[3.5px] border-ink p-4 sm:p-5 brutal-shadow-lg cursor-grab active:cursor-grabbing select-none z-20 bg-white" draggable="true" id="scenario-card" role="button" tabindex="0">
+<div class="flex items-center justify-between pb-2 mb-2 border-b-[2.5px] border-ink/20">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-lg bg-[#FFD95A] border-[2px] border-ink text-ink shadow-[1px_1px_0px_#2B2350]" id="scenario-topic-tag">SCENARIO #1</span>
+<span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#FFF8ED] border border-ink/40 uppercase tracking-wider text-ink/75">
+          DUCK POND CARD ★
+        </span>
+</div>
+<div class="flex items-center gap-1">
+<div class="items-center gap-1 text-[10px] font-black text-ink px-2 py-0.5 rounded-full bg-[#4DEBE3] border-[2px] border-ink shadow-[1px_1px_0px_#2B2350] hidden" id="selection-indicator">
+<i class="w-3 h-3 stroke-[3]" data-lucide="check"></i>
+<span>READY</span>
+</div>
+<div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#FFE0A8] via-[#F7B8D0] to-[#4DEBE3] border-[1.5px] border-ink flex items-center justify-center text-[10px] font-black">
+          ✦
+        </div>
+</div>
+</div>
+<h2 class="text-base sm:text-lg font-black text-ink mb-2 leading-snug" id="scenario-title">Asking before a hug</h2>
+<div class="bg-[#FFF8ED] p-3 sm:p-3.5 rounded-2xl border-[2.5px] border-ink mb-2 relative overflow-hidden">
+<p class="text-xs sm:text-sm font-bold text-ink/90 leading-relaxed relative z-10" id="scenario-body">Someone asks for permission before hugging another person.</p>
+</div>
+<div class="pt-0.5 flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-ink/70">
+<span class="flex items-center gap-1">
+<i class="w-3 h-3 stroke-[2.5]" data-lucide="move"></i> Drag to Duck or click Flag below
+      </span>
+<span class="bg-[#B9A5F5]/30 px-2 py-0.5 rounded-md border border-ink/30" id="card-index-tag">CARD 1/10</span>
+<span class="sr-only" id="card-instruction">Drag card onto a duck or tap one of the flag buttons below.</span>
+</div>
+</div>
+</div>
+<!-- ================= THREE DUCK DROP ZONES & BUTTONS ================= -->
+<div class="mt-auto pt-2 grid grid-cols-3 gap-2 sm:gap-3 items-end relative z-20">
+<!-- STATION 1: PIP (GREEN FLAG) -->
+<div aria-label="Drop zone: Green Flag" class="dropzone duck-dock-station flex flex-col items-center justify-between p-2 rounded-2xl bg-gradient-to-b from-[#86E0AE]/35 to-[#86E0AE]/65 text-ink text-center group border-[3.5px] border-ink relative overflow-hidden h-44 sm:h-48 cursor-pointer select-none" data-flag="green" id="station-green" role="region">
+<!-- Sturdy Wooden Flagpole & Banner -->
+<div class="w-full flex items-start gap-1 relative z-20 pointer-events-none">
+<div class="flex flex-col items-center shrink-0">
+<div class="w-3.5 h-3.5 rounded-full bg-[#FFD95A] border-[2px] border-ink shadow-[1px_1px_0px_#2B2350]"></div>
+<div class="w-1.5 h-14 bg-[#BA8B4B] border-x-[1.5px] border-ink rounded-b-sm shadow-[1px_0px_0px_#2B2350]"></div>
+</div>
+<div class="flex-1 bg-[#86E0AE] border-[2.5px] border-ink rounded-r-2xl rounded-bl-xl p-1.5 brutal-shadow-sm text-left transform -rotate-1 group-hover:rotate-0 transition-transform origin-left relative">
+<div class="flex items-center justify-between">
+<span class="text-[10px] sm:text-xs font-black tracking-tight uppercase leading-none text-ink flex items-center gap-0.5">
+<span>🚩</span> Pip
+          </span>
+<span class="w-2.5 h-2.5 rounded-full bg-white border border-ink flex items-center justify-center text-[7px] font-black">✓</span>
+</div>
+<span class="text-[9px] sm:text-[10px] font-black uppercase text-ink block mt-0.5">Green Flag</span>
+<span class="text-[8px] sm:text-[9px] font-extrabold text-ink/80 block leading-none">Healthy</span>
+</div>
+</div>
+<!-- Pip Duck Graphic -->
+<div class="w-full flex justify-center items-end my-auto relative z-10 pointer-events-none">
+<svg class="duck-float-green group-hover:scale-105 transition-transform" height="86" viewbox="0 0 100 86" width="100">
+<ellipse cx="40" cy="62" fill="#4DEBE3" rx="28" ry="6" stroke="#2B2350" stroke-width="2"></ellipse>
+<ellipse cx="42" cy="44" fill="#FFE0A8" rx="21" ry="15" stroke="#2B2350" stroke-width="2.6"></ellipse>
+<path d="M30 43 C22 38 20 50 34 50 Z" fill="#FFD95A" stroke="#2B2350" stroke-width="2.4"></path>
+<ellipse cx="24" cy="43" fill="#FFD95A" rx="4.5" ry="5.5" stroke="#2B2350" stroke-width="2.2"></ellipse>
+<circle cx="50" cy="28" fill="#FFE0A8" r="14" stroke="#2B2350" stroke-width="2.6"></circle>
+<path d="M50 14 C44 8 49 5 55 10 C59 6 64 10 57 15 Z" fill="#86E0AE" stroke="#2B2350" stroke-width="2"></path>
+<circle class="duck-eye-blink" cx="53" cy="26" fill="#2B2350" r="2.6"></circle>
+<circle cx="54.2" cy="24.8" fill="#FFFFFF" r="0.9"></circle>
+<path d="M61 27 Q70 29 65 33 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="2.2"></path>
+<line stroke="#2B2350" stroke-linecap="round" stroke-width="2.5" x1="17" x2="17" y1="12" y2="57"></line>
+<path d="M17 12 Q38 17 17 25 Z" fill="#86E0AE" stroke="#2B2350" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Unmistakable Direct Click Button -->
+<button class="btn-arcade w-full py-1.5 px-1 rounded-xl bg-[#86E0AE] border-[2px] border-ink text-ink font-black text-[10px] sm:text-[11px] uppercase tracking-wider brutal-shadow-sm relative z-30 group-hover:bg-[#68d697] cursor-pointer" onclick="handleClassification('green')" type="button">
+      Select Green Flag
+    </button>
+</div>
+<!-- STATION 2: QUILL (YELLOW FLAG) -->
+<div aria-label="Drop zone: Yellow Flag" class="dropzone duck-dock-station flex flex-col items-center justify-between p-2 rounded-2xl bg-gradient-to-b from-[#FFD95A]/40 to-[#FFD95A]/75 text-ink text-center group border-[3.5px] border-dashed border-ink relative overflow-hidden h-44 sm:h-48 cursor-pointer select-none" data-flag="yellow" id="station-yellow" role="region">
+<!-- Sturdy Wooden Flagpole & Banner -->
+<div class="w-full flex items-start gap-1 relative z-20 pointer-events-none">
+<div class="flex flex-col items-center shrink-0">
+<div class="w-3.5 h-3.5 rounded-full bg-[#FFE0A8] border-[2px] border-ink shadow-[1px_1px_0px_#2B2350]"></div>
+<div class="w-1.5 h-14 bg-[#BA8B4B] border-x-[1.5px] border-ink rounded-b-sm shadow-[1px_0px_0px_#2B2350]"></div>
+</div>
+<div class="flex-1 bg-[#FFD95A] border-[2.5px] border-dashed border-ink rounded-r-2xl rounded-bl-xl p-1.5 brutal-shadow-sm text-left transform rotate-1 group-hover:rotate-0 transition-transform origin-left relative">
+<div class="flex items-center justify-between">
+<span class="text-[10px] sm:text-xs font-black tracking-tight uppercase leading-none text-ink flex items-center gap-0.5">
+<span>🚩</span> Quill
+          </span>
+<span class="w-2.5 h-2.5 rounded-full bg-white border border-ink flex items-center justify-center text-[7px] font-black">?</span>
+</div>
+<span class="text-[9px] sm:text-[10px] font-black uppercase text-ink block mt-0.5">Yellow Flag</span>
+<span class="text-[8px] sm:text-[9px] font-black text-ink/90 bg-white/70 px-1 rounded border border-ink/40 inline-block leading-tight">It Depends</span>
+</div>
+</div>
+<!-- Quill Duck Graphic -->
+<div class="w-full flex justify-center items-end my-auto relative z-10 pointer-events-none">
+<svg class="duck-float-yellow group-hover:scale-105 transition-transform" height="86" viewbox="0 0 100 86" width="100">
+<ellipse cx="40" cy="62" fill="#B6F0EB" rx="28" ry="6" stroke="#2B2350" stroke-width="2"></ellipse>
+<ellipse cx="44" cy="44" fill="#FFE0A8" rx="21" ry="15" stroke="#2B2350" stroke-width="2.6"></ellipse>
+<path d="M31 43 C23 38 22 50 35 50 Z" fill="#FFD95A" stroke="#2B2350" stroke-width="2.4"></path>
+<ellipse cx="25" cy="43" fill="#FFD95A" rx="4.5" ry="5.5" stroke="#2B2350" stroke-width="2.2"></ellipse>
+<circle cx="42" cy="27" fill="#FFE0A8" r="14" stroke="#2B2350" stroke-width="2.6"></circle>
+<circle cx="36" cy="26" fill="none" r="4.5" stroke="#2B2350" stroke-width="2"></circle>
+<line stroke="#2B2350" stroke-width="2" x1="40.5" x2="43" y1="26" y2="26"></line>
+<circle class="duck-eye-blink" cx="36" cy="26" fill="#2B2350" r="2.2"></circle>
+<circle cx="37" cy="25" fill="#FFFFFF" r="0.8"></circle>
+<path d="M31 27 Q22 29 27 33 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="2.2"></path>
+<line stroke="#2B2350" stroke-linecap="round" stroke-width="2.5" x1="68" x2="68" y1="12" y2="57"></line>
+<path d="M68 12 Q88 17 68 25 Z" fill="#FFD95A" stroke="#2B2350" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Unmistakable Direct Click Button -->
+<button class="btn-arcade w-full py-1.5 px-1 rounded-xl bg-[#FFD95A] border-[2px] border-ink text-ink font-black text-[10px] sm:text-[11px] uppercase tracking-wider brutal-shadow-sm relative z-30 group-hover:bg-[#ffcf33] cursor-pointer" onclick="handleClassification('yellow')" type="button">
+      Select Yellow Flag
+    </button>
+</div>
+<!-- STATION 3: BARNABY (RED FLAG) -->
+<div aria-label="Drop zone: Red Flag" class="dropzone duck-dock-station flex flex-col items-center justify-between p-2 rounded-2xl bg-gradient-to-b from-[#FF8F80]/35 to-[#FF8F80]/65 text-ink text-center group border-[3.5px] border-ink relative overflow-hidden h-44 sm:h-48 cursor-pointer select-none" data-flag="red" id="station-red" role="region">
+<!-- Sturdy Wooden Flagpole & Banner -->
+<div class="w-full flex items-start gap-1 relative z-20 pointer-events-none">
+<div class="flex flex-col items-center shrink-0">
+<div class="w-3.5 h-3.5 rounded-full bg-[#FFD95A] border-[2px] border-ink shadow-[1px_1px_0px_#2B2350]"></div>
+<div class="w-1.5 h-14 bg-[#BA8B4B] border-x-[1.5px] border-ink rounded-b-sm shadow-[1px_0px_0px_#2B2350]"></div>
+</div>
+<div class="flex-1 bg-[#FF8F80] border-[2.5px] border-ink rounded-r-2xl rounded-bl-xl p-1.5 brutal-shadow-sm text-left transform -rotate-1 group-hover:rotate-0 transition-transform origin-left relative">
+<div class="flex items-center justify-between">
+<span class="text-[10px] sm:text-xs font-black tracking-tight uppercase leading-none text-ink flex items-center gap-0.5">
+<span>🚩</span> Barnaby
+          </span>
+<span class="w-2.5 h-2.5 rounded-full bg-white border border-ink flex items-center justify-center text-[7px] font-black">!</span>
+</div>
+<span class="text-[9px] sm:text-[10px] font-black uppercase text-ink block mt-0.5">Red Flag</span>
+<span class="text-[8px] sm:text-[9px] font-extrabold text-ink/80 block leading-none">Warning</span>
+</div>
+</div>
+<!-- Barnaby Duck Graphic -->
+<div class="w-full flex justify-center items-end my-auto relative z-10 pointer-events-none">
+<svg class="duck-float-red group-hover:scale-105 transition-transform" height="86" viewbox="0 0 100 86" width="100">
+<ellipse cx="40" cy="62" fill="#F7B8D0" rx="28" ry="6" stroke="#2B2350" stroke-width="2"></ellipse>
+<ellipse cx="42" cy="44" fill="#FFE0A8" rx="21" ry="15" stroke="#2B2350" stroke-width="2.6"></ellipse>
+<path d="M31 43 C23 38 21 50 35 50 Z" fill="#FFD95A" stroke="#2B2350" stroke-width="2.4"></path>
+<ellipse cx="25" cy="43" fill="#FFD95A" rx="4.5" ry="5.5" stroke="#2B2350" stroke-width="2.2"></ellipse>
+<circle cx="48" cy="28" fill="#FFE0A8" r="14" stroke="#2B2350" stroke-width="2.6"></circle>
+<path d="M47 21 Q51 19 55 22" fill="none" stroke="#2B2350" stroke-linecap="round" stroke-width="2"></path>
+<circle class="duck-eye-blink" cx="51" cy="26" fill="#2B2350" r="2.5"></circle>
+<circle cx="52" cy="25" fill="#FFFFFF" r="0.8"></circle>
+<path d="M59 27 Q67 29 62 33 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="2.2"></path>
+<line stroke="#2B2350" stroke-linecap="round" stroke-width="2.5" x1="68" x2="68" y1="12" y2="57"></line>
+<path d="M68 12 Q88 17 68 25 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Unmistakable Direct Click Button -->
+<button class="btn-arcade w-full py-1.5 px-1 rounded-xl bg-[#FF8F80] border-[2px] border-ink text-ink font-black text-[10px] sm:text-[11px] uppercase tracking-wider brutal-shadow-sm relative z-30 group-hover:bg-[#ff7663] cursor-pointer" onclick="handleClassification('red')" type="button">
+      Select Red Flag
+    </button>
+</div>
+</div>
+</section>
+<!-- ================= SCREEN 3: FEEDBACK SCREEN ================= -->
+<section aria-live="polite" class="flex-col h-full flex-1 justify-between my-auto py-1 relative z-20 hidden" id="screen-feedback">
+<div class="bg-white rounded-3xl border-[3.5px] border-ink p-4 sm:p-5 brutal-shadow-lg overflow-y-auto max-h-[72vh] relative z-20">
+<div class="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b-[2.5px] border-ink/20">
+<div class="flex items-center gap-2">
+<div class="w-12 h-12 rounded-2xl bg-[#FFF8ED] border-[2.5px] border-ink flex items-center justify-center p-1 shadow-[2px_2px_0px_#2B2350] relative overflow-hidden" id="feedback-duck-reaction-avatar"></div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl border-[2px] border-ink text-xs font-black uppercase text-ink shadow-[1px_1px_0px_#2B2350]" id="feedback-flag-pill">
+<span id="feedback-flag-icon"><i class="w-3.5 h-3.5 stroke-[3]" data-lucide="help-circle"></i></span>
+<span id="feedback-flag-label">Yellow Flag (Quill)</span>
+</span>
+</div>
+<span class="text-xs font-black text-ink uppercase px-2.5 py-1 rounded-xl bg-[#FFE0A8] border-[2px] border-ink" id="feedback-match-status">Spot on!</span>
+</div>
+<h3 class="text-sm sm:text-base font-black text-ink mb-2 leading-snug" id="feedback-scenario-title">“Time with friends”</h3>
+<!-- Gentle Perspective if picked alternative -->
+<div class="mb-3 p-3 rounded-2xl bg-[#FFE0A8] border-[2px] border-ink text-xs font-bold text-ink leading-relaxed brutal-shadow-sm" id="feedback-wrong-box">
+<div class="flex items-center gap-1.5 mb-1 text-[11px] font-black uppercase text-ink">
+<span class="text-base">🦆</span>
+<span>Gentle Perspective from the Pond</span>
+</div>
+<p id="feedback-wrong-text"></p>
+</div>
+<!-- Why this matters -->
+<div class="mb-3 bg-[#FFF8ED] p-3 sm:p-3.5 rounded-2xl border-[2px] border-ink">
+<h4 class="text-[11px] font-black uppercase tracking-wider text-ink/75 mb-1 flex items-center gap-1">
+<i class="w-3.5 h-3.5 stroke-[2.5]" data-lucide="book-open"></i>
+<span>Why this matters</span>
+</h4>
+<p class="text-xs sm:text-sm font-bold leading-relaxed text-ink" id="feedback-explanation"></p>
+</div>
+<!-- Yellow Flag Branching Container -->
+<div class="mb-3 p-3 rounded-2xl bg-[#FFD95A]/35 border-[2.5px] border-dashed border-ink animate-branch-pop" id="yellow-fork-container">
+<div class="flex items-center gap-2 font-black text-xs text-ink uppercase mb-1.5">
+<span class="p-1 rounded-lg bg-[#FFD95A] border border-ink">
+<i class="w-4 h-4 stroke-[3]" data-lucide="git-fork"></i>
+</span>
+<span>It depends on what happens next:</span>
+</div>
+<p class="text-[11px] font-extrabold text-ink/90 italic mb-2.5 bg-white p-2.5 rounded-xl border border-ink shadow-[1.5px_1.5px_0px_#2B2350]">
+      “Not every uncomfortable or unclear situation is harmful. Context and communication matter.”
+    </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+<div class="p-2.5 rounded-xl bg-[#86E0AE] border-[2px] border-ink flex flex-col justify-start brutal-shadow-sm">
+<span class="font-black text-[11px] text-ink uppercase tracking-wide flex items-center gap-1 mb-1">
+<i class="w-3.5 h-3.5 stroke-[3]" data-lucide="check-circle-2"></i> If healthy:
+        </span>
+<span class="text-[11px] font-bold text-ink leading-snug" id="fork-healthy-text"></span>
+</div>
+<div class="p-2.5 rounded-xl bg-[#FF8F80] border-[2px] border-ink flex flex-col justify-start brutal-shadow-sm">
+<span class="font-black text-[11px] text-ink uppercase tracking-wide flex items-center gap-1 mb-1">
+<i class="w-3.5 h-3.5 stroke-[2.5]" data-lucide="alert-octagon"></i> If concerning:
+        </span>
+<span class="text-[11px] font-bold text-ink leading-snug" id="fork-concerning-text"></span>
+</div>
+</div>
+</div>
+<!-- Key Takeaway -->
+<div class="p-3 rounded-2xl bg-[#B9A5F5]/35 border-[2.5px] border-ink flex items-start gap-2.5">
+<div class="p-1.5 rounded-xl bg-[#B9A5F5] border-[2px] border-ink text-ink mt-0.5 brutal-shadow-sm">
+<i class="w-4 h-4 stroke-[2.5]" data-lucide="bookmark-check"></i>
+</div>
+<div>
+<span class="text-[10px] font-black uppercase tracking-wider text-ink/80 block">Takeaway</span>
+<p class="text-xs sm:text-sm font-black text-ink leading-snug" id="feedback-takeaway"></p>
+</div>
+</div>
+</div>
+<button class="btn-arcade w-full mt-3 py-3.5 px-6 rounded-2xl bg-[#4DEBE3] text-ink font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 group relative z-30" id="btn-continue" type="button">
+<span>Continue on the Pond →</span>
+</button>
+</section>
+<!-- ================= SCREEN 4: COMPLETION SCREEN ================= -->
+<section class="hidden flex-col h-full flex-1 py-1" id="screen-completion">
+<div class="bg-white rounded-3xl border-[3.5px] border-ink p-4 sm:p-5 brutal-shadow-lg overflow-y-auto max-h-[72vh] mb-3">
+<div class="text-center mb-3">
+<div class="relative inline-flex items-center justify-center gap-2 p-2 bg-[#B6F0EB] rounded-2xl border-[2.5px] border-ink mb-1.5 brutal-shadow-sm">
+<span class="text-xl">🪷</span>
+<span class="text-2xl">🦆</span>
+<span class="text-xl">✨</span>
+<span class="text-2xl">🦆</span>
+<span class="text-xl">🌸</span>
+</div>
+<h2 class="text-xl font-black text-ink uppercase tracking-tight mb-0.5">Pond Quest Completed!</h2>
+<p class="text-xs font-bold text-ink/80 max-w-sm mx-auto leading-relaxed">
+      All 10 scenarios explored together with Pip, Quill, and Barnaby.
+    </p>
+</div>
+<!-- Highlight for Yellow "It Depends" Flags -->
+<div class="mb-3 p-3 rounded-2xl bg-[#FFD95A] border-[2.5px] border-ink brutal-shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-white border-[2px] border-ink flex items-center justify-center text-ink shadow-[1px_1px_0px_#2B2350]">
+<i class="w-5 h-5 stroke-[3]" data-lucide="star"></i>
+</div>
+<div>
+<span class="text-[10px] font-black uppercase tracking-wider text-ink/75 block">Special Context Award</span>
+<span class="text-xs font-black text-ink" id="yellow-highlight-stat">You spotted 3 of 3 “it depends” situations!</span>
+</div>
+</div>
+<span class="text-[11px] font-black px-2 py-1 rounded-lg bg-white border border-ink uppercase">★ Mastered</span>
+</div>
+<!-- Sanctuary Ducks -->
+<div class="mb-3.5 p-3 rounded-2xl bg-[#4DEBE3]/30 border-[2.5px] border-ink brutal-shadow-sm">
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-xs font-black uppercase text-ink flex items-center gap-1.5">
+<span>🌊</span>
+<span>Your Duck Pond Sanctuary</span>
+</span>
+<span class="text-[10px] font-black uppercase bg-white px-2 py-0.5 rounded-md border border-ink" id="duck-pond-count">
+        10 Happy Ducks
+      </span>
+</div>
+<p class="text-[11px] font-bold text-ink/80 mb-2 leading-snug">
+      Friendly ducks swimming peacefully to celebrate your boundary instincts!
+    </p>
+<div class="p-2 bg-[#FFF8ED] rounded-xl border-[2px] border-ink min-h-[52px] flex items-center flex-wrap gap-2" id="duck-pond-water"></div>
+</div>
+<!-- Sorting Records -->
+<div class="bg-[#FFF8ED] border-[2.5px] border-ink rounded-2xl p-3 mb-3.5 brutal-shadow-sm">
+<div class="flex items-center justify-between mb-2 pb-1 border-b-[2px] border-ink/20">
+<span class="text-xs font-black uppercase text-ink flex items-center gap-1.5">
+<i class="w-3.5 h-3.5 stroke-[2.5]" data-lucide="bar-chart-2"></i>
+<span>Sorting Summary</span>
+</span>
+<span class="text-[10px] font-black uppercase bg-[#FFE0A8] px-2 py-0.5 rounded-md border border-ink">Pond Deck</span>
+</div>
+<div class="space-y-1.5 text-xs font-bold text-ink" id="completion-stats"></div>
+</div>
+<!-- Pond Scrapbook & Takeaways -->
+<div class="mb-3.5">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-xs font-black uppercase tracking-wider text-ink flex items-center gap-1.5">
+<i class="w-3.5 h-3.5 stroke-[2.5]" data-lucide="book-marked"></i>
+<span>Pond Scrapbook &amp; Takeaways</span>
+</h3>
+<span class="text-[10px] font-bold text-ink/70">10 Cards</span>
+</div>
+<div class="space-y-2 max-h-48 overflow-y-auto pr-1" id="takeaways-list"></div>
+</div>
+<!-- Peer Support Advocate Card -->
+<div class="p-3.5 rounded-2xl bg-[#F7B8D0] border-[2.5px] border-ink text-center brutal-shadow-sm">
+<h4 class="text-xs font-black uppercase tracking-wider text-ink mb-1">Need someone to talk to?</h4>
+<p class="text-[11px] font-bold text-ink/85 mb-2.5 leading-snug">
+      SHY offers supportive, student-centered peer conversations on consent and healthy relationships.
+    </p>
+<a class="btn-arcade inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-white text-xs font-black uppercase tracking-wider text-ink" href="#" id="peer-advocate-link" rel="noopener noreferrer" target="_blank">
+<i class="w-4 h-4 stroke-[2.5]" data-lucide="message-circle"></i>
+<span>Talk to a SHY Peer Advocate</span>
+</a>
+</div>
+</div>
+<button class="btn-arcade w-full py-3.5 px-6 rounded-2xl bg-[#4DEBE3] text-ink font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2" id="btn-restart" type="button">
+<i class="w-4 h-4 stroke-[3]" data-lucide="rotate-ccw"></i>
+<span>Play Again at the Pond</span>
+</button>
+</section>
+</main>
+<!-- Gentle Skip Toast Notification -->
+<div class="hidden absolute top-16 left-1/2 -translate-x-1/2 bg-[#2B2350] text-[#FFF8ED] px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-2 border-ink brutal-shadow transition-all z-50 flex items-center gap-2" id="skip-toast">
+<span class="text-sm">🦆</span>
+<span>Let’s swim to the next card!</span>
+</div>
+</div>
+<!-- ================= LOGIC & GAME ENGINE ================= -->
+<script>
+    const PEER_ADVOCATE_URL = "#";
+
+    const rawScenarios = [
+      {
+        "id": "s1",
+        "title": "Asking before a hug",
+        "scenario": "Someone asks for permission before hugging another person.",
+        "correct": "green",
+        "explanation": "Asking permission shows respect for another person’s boundaries.",
+        "ifPickedInstead": {
+          "yellow": "Asking first doesn’t need more context. It’s a clear sign of respect.",
+          "red": "Asking first is a healthy habit, not a warning sign."
+        },
+        "takeaway": "Asking first shows respect."
+      },
+      {
+        "id": "s2",
+        "title": "Joking after being asked to stop",
+        "scenario": "Someone keeps joking about another person’s boundaries after being asked to stop.",
+        "correct": "red",
+        "explanation": "Continuing after someone has clearly said they’re uncomfortable shows a lack of respect for their boundaries.",
+        "ifPickedInstead": {
+          "green": "The key detail is “after being asked to stop”. Once someone has said no, carrying on isn’t harmless.",
+          "yellow": "The key detail is “after being asked to stop”. Once someone has said no, carrying on is not a misunderstanding."
+        },
+        "takeaway": "After someone says stop, carrying on is not a joke."
+      },
+      {
+        "id": "s3",
+        "title": "Going quiet when upset",
+        "scenario": "A friend goes quiet whenever they’re upset and won’t say why.",
+        "correct": "yellow",
+        "explanation": "It needs context. Some people need time before they can talk, and the healthy response is to check in kindly and respect their pace. It becomes a concern if the silence is used to punish or control the other person.",
+        "ifPickedInstead": {
+          "green": "One situation alone doesn’t tell us enough to call it healthy. Check in kindly and see how they respond.",
+          "red": "One situation alone doesn’t tell us enough to call it harmful. Some people just need time before they can talk."
+        },
+        "takeaway": "Silence can mean someone needs time. Check in kindly and respect their pace.",
+        "branches": {
+          "healthy": "You check in kindly, and they talk when they’re ready.",
+          "concerning": "The silence is used to punish or control you."
+        }
+      },
+      {
+        "id": "s4",
+        "title": "“Prove you trust me”",
+        "scenario": "Someone you’re talking to says that if you trust them, you’ll send them private pictures.",
+        "correct": "red",
+        "explanation": "Trust doesn’t depend on sending private images. Using trust to pressure someone is manipulation, and consent must be freely given.",
+        "ifPickedInstead": {
+          "green": "Pressure is a warning sign even when it’s phrased as a compliment or a test of trust.",
+          "yellow": "This isn’t a grey area. Consent must be freely given, and pressure to send pictures is a warning sign."
+        },
+        "takeaway": "Trust never requires sending private pictures."
+      },
+      {
+        "id": "s5",
+        "title": "Respecting topics you don’t want to discuss",
+        "scenario": "A friend notices you don’t want to talk about certain topics and doesn’t push you.",
+        "correct": "green",
+        "explanation": "People have different comfort levels, and respecting them is part of healthy communication.",
+        "ifPickedInstead": {
+          "yellow": "Not pushing is respect, not avoidance, so it doesn’t need more context.",
+          "red": "Not pushing is respect, not avoidance. It isn’t a warning sign."
+        },
+        "takeaway": "Respecting someone’s comfort level is part of healthy communication."
+      },
+      {
+        "id": "s6",
+        "title": "Time with friends",
+        "scenario": "Your partner says they miss you when you see friends on weekends and asks you to spend more time with them.",
+        "correct": "yellow",
+        "explanation": "Wanting time together is normal. What matters is how they respond when you say no. Respecting your answer is healthy, while guilt-tripping or getting angry is a concern.",
+        "ifPickedInstead": {
+          "green": "Wanting time together is normal, but we can’t call it healthy until we see how they react to your answer.",
+          "red": "Missing you isn’t a warning sign by itself. What matters is how they respond when you say no."
+        },
+        "takeaway": "Wanting time together is normal. How they respond to your “no” is what matters.",
+        "branches": {
+          "healthy": "They respect your answer when you say no.",
+          "concerning": "They guilt-trip you or get angry."
+        }
+      },
+      {
+        "id": "s7",
+        "title": "Changing your mind",
+        "scenario": "Someone agreed to something earlier, then says they’ve changed their mind. The other person says, “But you already said yes.”",
+        "correct": "red",
+        "explanation": "Consent can be withdrawn at any time. Saying yes once doesn’t mean yes forever.",
+        "ifPickedInstead": {
+          "green": "Treating an earlier yes as binding ignores the other person’s right to change their mind.",
+          "yellow": "This isn’t a grey area. Treating an earlier yes as binding ignores the other person’s right to change their mind."
+        },
+        "takeaway": "Consent can be withdrawn at any time."
+      },
+      {
+        "id": "s8",
+        "title": "Asking before sharing",
+        "scenario": "A friend asks whether it’s okay before telling anyone else something you shared with them.",
+        "correct": "green",
+        "explanation": "Checking before sharing someone’s personal information respects their privacy and builds trust.",
+        "ifPickedInstead": {
+          "yellow": "Asking permission protects the other person’s privacy, so it doesn’t need more context.",
+          "red": "Asking first is a good sign, not a warning sign. It protects the other person’s privacy."
+        },
+        "takeaway": "Asking before sharing builds trust."
+      },
+      {
+        "id": "s9",
+        "title": "Personal questions from someone online",
+        "scenario": "Someone you met online keeps asking where you live and where you study, and gets annoyed when you don’t answer.",
+        "correct": "red",
+        "explanation": "Pressing for personal details and getting upset about boundaries is a safety risk. Don’t share your location or where you study, and tell someone you trust.",
+        "ifPickedInstead": {
+          "green": "Annoyance at your “no” is the warning sign here, not the questions alone.",
+          "yellow": "Getting annoyed at your “no” while asking where you live is more than a grey area. It’s a safety risk."
+        },
+        "takeaway": "If someone gets upset when you keep personal details private, step back and tell someone you trust."
+      },
+      {
+        "id": "s10",
+        "title": "Choosing where to meet",
+        "scenario": "A friend usually decides where you meet without asking what you’d like.",
+        "correct": "yellow",
+        "explanation": "It could be habit rather than disrespect. It’s worth saying something like “Can I pick next time?” If they ignore a clear request, it becomes a red flag.",
+        "ifPickedInstead": {
+          "green": "It could be habit, but we can’t call it healthy until they hear a clear request. Try saying something.",
+          "red": "Small patterns like this are a chance to communicate, not an automatic red flag."
+        },
+        "takeaway": "Small patterns are a chance to speak up. A clear request that’s ignored is a red flag.",
+        "branches": {
+          "healthy": "They listen when you say “Can I pick next time?”",
+          "concerning": "They ignore a clear request."
+        }
+      }
+    ];
+
+    function getDuckAvatarSVG(character = 'pip', size = 32) {
+      if (character === 'pip') {
+        return `
+          <svg width="${size}" height="${size}" viewBox="0 0 40 40">
+            <ellipse cx="20" cy="26" rx="10" ry="7" fill="#FFE0A8" stroke="#2B2350" stroke-width="1.8"/>
+            <circle cx="23" cy="16" r="6.5" fill="#FFE0A8" stroke="#2B2350" stroke-width="1.8"/>
+            <path d="M23 8 C18 4 21 2 25 5 C27 3 31 5 26 9 Z" fill="#86E0AE" stroke="#2B2350" stroke-width="1.2"/>
+            <circle cx="25" cy="15" r="1.3" fill="#2B2350" class="duck-eye-blink"/>
+            <path d="M28 15 Q33 16 31 18 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="1.4"/>
+            <line x1="12" y1="8" x2="12" y2="28" stroke="#2B2350" stroke-width="1.8"/>
+            <polygon points="12,8 4,12 12,16" fill="#86E0AE" stroke="#2B2350" stroke-width="1.4"/>
+          </svg>
+        `;
+      } else if (character === 'quill') {
+        return `
+          <svg width="${size}" height="${size}" viewBox="0 0 40 40">
+            <ellipse cx="20" cy="26" rx="10" ry="7" fill="#FFE0A8" stroke="#2B2350" stroke-width="1.8"/>
+            <circle cx="18" cy="16" r="6.5" fill="#FFE0A8" stroke="#2B2350" stroke-width="1.8"/>
+            <circle cx="16" cy="15.5" r="2.4" fill="none" stroke="#2B2350" stroke-width="1.4"/>
+            <circle cx="16" cy="15.5" r="1.1" fill="#2B2350" class="duck-eye-blink"/>
+            <path d="M12 15 Q8 16 10 18 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="1.4"/>
+            <line x1="28" y1="8" x2="28" y2="28" stroke="#2B2350" stroke-width="1.8"/>
+            <polygon points="28,8 36,12 28,16" fill="#FFD95A" stroke="#2B2350" stroke-width="1.4"/>
+          </svg>
+        `;
+      } else {
+        return `
+          <svg width="${size}" height="${size}" viewBox="0 0 40 40">
+            <ellipse cx="20" cy="26" rx="10" ry="7" fill="#FFE0A8" stroke="#2B2350" stroke-width="1.8"/>
+            <circle cx="17" cy="16" r="6.5" fill="#FFE0A8" stroke="#2B2350" stroke-width="1.8"/>
+            <circle cx="16" cy="15.5" r="1.3" fill="#2B2350" class="duck-eye-blink"/>
+            <path d="M11 15 Q7 16 9 18 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="1.4"/>
+            <line x1="28" y1="8" x2="28" y2="28" stroke="#2B2350" stroke-width="1.8"/>
+            <polygon points="28,8 36,12 28,16" fill="#FF8F80" stroke="#2B2350" stroke-width="1.4"/>
+          </svg>
+        `;
+      }
+    }
+
+    function getPondSwimmerSVG(size = 32) {
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 38 34" class="duck-float-green">
+          <ellipse cx="18" cy="22" rx="11" ry="8" fill="#FFE0A8" stroke="#2B2350" stroke-width="2"/>
+          <path d="M13 22 Q18 19 21 22" fill="none" stroke="#2B2350" stroke-width="1.8"/>
+          <circle cx="24" cy="14" r="6.5" fill="#FFE0A8" stroke="#2B2350" stroke-width="2"/>
+          <circle cx="25.5" cy="13" r="1.4" fill="#2B2350" class="duck-eye-blink"/>
+          <circle cx="26" cy="12.4" r="0.6" fill="#FFFFFF"/>
+          <path d="M29.5 13 Q34 14 32 17 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="1.6"/>
+          <path d="M8 29 Q14 26 20 29 T32 29" fill="none" stroke="#4DEBE3" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      `;
+    }
+
+    function triggerDuckRain() {
+      const rainContainer = document.getElementById('duck-rain-container');
+      rainContainer.innerHTML = '';
+      const duckCount = 6;
+      const flagColors = ['#86E0AE', '#FFD95A', '#FF8F80'];
+      for (let i = 0; i < duckCount; i++) {
+        const duckEl = document.createElement('div');
+        duckEl.setAttribute('aria-hidden', 'true');
+        duckEl.className = 'absolute duck-rain-item pointer-events-none';
+        const leftPos = 8 + Math.floor(Math.random() * 84);
+        const delay = (i * 0.16 + Math.random() * 0.1).toFixed(2);
+        const rot = (-15 + Math.random() * 30).toFixed(0);
+        const rotEnd = (-12 + Math.random() * 24).toFixed(0);
+        duckEl.style.left = `${leftPos}%`;
+        duckEl.style.top = `-60px`;
+        duckEl.style.animationDelay = `${delay}s`;
+        duckEl.style.setProperty('--fall-rot', `${rot}deg`);
+        duckEl.style.setProperty('--fall-rot-end', `${rotEnd}deg`);
+
+        duckEl.innerHTML = `
+          <svg width="72" height="72" viewBox="0 0 44 44" class="filter drop-shadow-[2px_2px_0px_#2B2350]">
+            <ellipse cx="22" cy="27" rx="11" ry="8" fill="#FFE0A8" stroke="#2B2350" stroke-width="2.2"/>
+            <path d="M12 25 C8 15 14 12 17 22" fill="#FFD95A" stroke="#2B2350" stroke-width="2"/>
+            <path d="M32 25 C36 15 30 12 27 22" fill="#FFD95A" stroke="#2B2350" stroke-width="2"/>
+            <circle cx="22" cy="16" r="7" fill="#FFE0A8" stroke="#2B2350" stroke-width="2.2"/>
+            <circle cx="19.5" cy="15" r="1.3" fill="#2B2350" class="duck-eye-blink"/>
+            <circle cx="24.5" cy="15" r="1.3" fill="#2B2350" class="duck-eye-blink"/>
+            <path d="M19 19 Q22 23 25 19 Z" fill="#FF8F80" stroke="#2B2350" stroke-width="1.8"/>
+            <line x1="11" y1="8" x2="11" y2="31" stroke="#2B2350" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M11 8 Q23 11 11 16 Z" fill="${flagColors[i % flagColors.length]}" stroke="#2B2350" stroke-width="1.5"/>
+          </svg>
+        `;
+        rainContainer.appendChild(duckEl);
+      }
+      setTimeout(() => { rainContainer.innerHTML = ''; }, 4200);
+    }
+
+    // -------------------------------------------------------------
+    // App State
+    // -------------------------------------------------------------
+    let gameScenarios = [];
+    let currentIndex = 0;
+    let cardIsSelected = false;
+    let userAnswers = {};
+
+    const screenWelcome = document.getElementById('screen-welcome');
+    const screenPlay = document.getElementById('screen-play');
+    const screenFeedback = document.getElementById('screen-feedback');
+    const screenCompletion = document.getElementById('screen-completion');
+    const headerExitContainer = document.getElementById('header-exit-container');
+
+    const btnStart = document.getElementById('btn-start');
+    const btnExit = document.getElementById('btn-exit');
+    const btnSkip = document.getElementById('btn-skip');
+    const btnContinue = document.getElementById('btn-continue');
+    const btnRestart = document.getElementById('btn-restart');
+    const peerAdvocateLink = document.getElementById('peer-advocate-link');
+
+    const scenarioCard = document.getElementById('scenario-card');
+    const scenarioTitle = document.getElementById('scenario-title');
+    const scenarioBody = document.getElementById('scenario-body');
+    const scenarioTopicTag = document.getElementById('scenario-topic-tag');
+    const cardIndexTag = document.getElementById('card-index-tag');
+    const selectionIndicator = document.getElementById('selection-indicator');
+    const progressBadge = document.getElementById('progress-badge');
+    const pegsTrack = document.getElementById('pegs-track');
+
+    const feedbackDuckReactionAvatar = document.getElementById('feedback-duck-reaction-avatar');
+    const feedbackFlagPill = document.getElementById('feedback-flag-pill');
+    const feedbackFlagIcon = document.getElementById('feedback-flag-icon');
+    const feedbackFlagLabel = document.getElementById('feedback-flag-label');
+    const feedbackMatchStatus = document.getElementById('feedback-match-status');
+    const feedbackScenarioTitle = document.getElementById('feedback-scenario-title');
+    const feedbackWrongBox = document.getElementById('feedback-wrong-box');
+    const feedbackWrongText = document.getElementById('feedback-wrong-text');
+    const feedbackExplanation = document.getElementById('feedback-explanation');
+    const feedbackTakeaway = document.getElementById('feedback-takeaway');
+    const yellowForkContainer = document.getElementById('yellow-fork-container');
+    const forkHealthyText = document.getElementById('fork-healthy-text');
+    const forkConcerningText = document.getElementById('fork-concerning-text');
+
+    const completionStats = document.getElementById('completion-stats');
+    const yellowHighlightStat = document.getElementById('yellow-highlight-stat');
+    const takeawaysList = document.getElementById('takeaways-list');
+    const duckPondWater = document.getElementById('duck-pond-water');
+    const duckPondCount = document.getElementById('duck-pond-count');
+    const skipToast = document.getElementById('skip-toast');
+
+    peerAdvocateLink.href = PEER_ADVOCATE_URL;
+
+    function renderPegs() {
+      pegsTrack.innerHTML = '';
+      for (let i = 0; i < 10; i++) {
+        const peg = document.createElement('div');
+        peg.className = "flex-1 flex flex-col items-center";
+
+        let bgClass = "bg-[#FFF8ED] border-ink/40";
+        let content = `<span class="text-[9px] font-black text-ink/40">${i + 1}</span>`;
+
+        if (i < currentIndex) {
+          const item = gameScenarios[i];
+          const ans = userAnswers[item.id];
+          if (ans) {
+            if (ans.chosen === 'green') {
+              bgClass = "bg-[#86E0AE] border-ink shadow-[1px_1px_0px_#2B2350]";
+              content = `<span class="text-[9px]">🦆</span>`;
+            } else if (ans.chosen === 'yellow') {
+              bgClass = "bg-[#FFD95A] border-ink shadow-[1px_1px_0px_#2B2350]";
+              content = `<span class="text-[9px]">?</span>`;
+            } else if (ans.chosen === 'red') {
+              bgClass = "bg-[#FF8F80] border-ink shadow-[1px_1px_0px_#2B2350]";
+              content = `<span class="text-[9px]">!</span>`;
+            } else {
+              bgClass = "bg-[#FFE0A8] border-ink";
+              content = `<span class="text-[8px] font-bold text-ink">↷</span>`;
+            }
+          }
+        } else if (i === currentIndex) {
+          bgClass = "bg-[#4DEBE3] border-ink scale-110 shadow-[1.5px_1.5px_0px_#2B2350]";
+          content = `<span class="text-[9px] font-black text-ink">★</span>`;
+        }
+
+        peg.innerHTML = `
+          <div class="w-5 h-6 rounded-md border-[1.5px] ${bgClass} flex items-center justify-center transition-all">
+            ${content}
+          </div>
+        `;
+        pegsTrack.appendChild(peg);
+      }
+    }
+
+    function showScreen(screen) {
+      [screenWelcome, screenPlay, screenFeedback, screenCompletion].forEach(s => s.classList.add('hidden'));
+      screen.classList.remove('hidden');
+
+      if (screen === screenWelcome || screen === screenCompletion) {
+        headerExitContainer.classList.add('hidden');
+      } else {
+        headerExitContainer.classList.remove('hidden');
+      }
+
+      lucide.createIcons();
+    }
+
+    function initGame() {
+      gameScenarios = [...rawScenarios];
+      currentIndex = 0;
+      cardIsSelected = false;
+      userAnswers = {};
+      loadScenario(currentIndex);
+      showScreen(screenPlay);
+    }
+
+    function loadScenario(index) {
+      if (index >= gameScenarios.length) {
+        showCompletionScreen();
+        return;
+      }
+
+      const item = gameScenarios[index];
+      progressBadge.innerHTML = `<i class="w-3.5 h-3.5" data-lucide="layers"></i> Card ${index + 1} of 10`;
+      scenarioTopicTag.textContent = `SCENARIO #${index + 1}`;
+      cardIndexTag.textContent = `CARD ${index + 1}/10`;
+
+      scenarioTitle.textContent = item.title;
+      scenarioBody.textContent = item.scenario;
+
+      cardIsSelected = false;
+      scenarioCard.classList.remove('ring-4', 'ring-[#4DEBE3]', 'bg-[#FFF8ED]');
+      scenarioCard.classList.add('bg-white');
+      scenarioCard.style.transform = '';
+      scenarioCard.setAttribute('aria-grabbed', 'false');
+      selectionIndicator.classList.add('hidden');
+
+      renderPegs();
+      lucide.createIcons();
+    }
+
+    function toggleCardSelection() {
+      cardIsSelected = !cardIsSelected;
+      if (cardIsSelected) {
+        scenarioCard.classList.add('ring-4', 'ring-[#4DEBE3]', 'bg-[#FFF8ED]');
+        scenarioCard.classList.remove('bg-white');
+        scenarioCard.setAttribute('aria-grabbed', 'true');
+        selectionIndicator.classList.remove('hidden');
+      } else {
+        scenarioCard.classList.remove('ring-4', 'ring-[#4DEBE3]', 'bg-[#FFF8ED]');
+        scenarioCard.classList.add('bg-white');
+        scenarioCard.setAttribute('aria-grabbed', 'false');
+        selectionIndicator.classList.add('hidden');
+      }
+    }
+
+    function handleClassification(chosenFlag) {
+      if (currentIndex >= gameScenarios.length) return;
+      const current = gameScenarios[currentIndex];
+      const isCorrect = current.correct === chosenFlag;
+
+      userAnswers[current.id] = {
+        chosen: chosenFlag,
+        isCorrect: isCorrect
+      };
+
+      if (window.onEvent) {
+        window.onEvent({
+          scenarioId: current.id,
+          action: "classified",
+          chosen: chosenFlag
+        });
+      }
+
+      const targetStation = document.getElementById(`station-${chosenFlag}`);
+      if (targetStation) {
+        targetStation.classList.add('animate-duck-hop');
+        setTimeout(() => targetStation.classList.remove('animate-duck-hop'), 600);
+      }
+
+      if (isCorrect) {
+        triggerDuckRain();
+      }
+
+      renderFeedback(current, chosenFlag);
+      showScreen(screenFeedback);
+    }
+
+    function handleSkip() {
+      if (currentIndex >= gameScenarios.length) return;
+      const current = gameScenarios[currentIndex];
+      userAnswers[current.id] = {
+        chosen: 'skipped',
+        isCorrect: false
+      };
+
+      if (window.onEvent) {
+        window.onEvent({
+          scenarioId: current.id,
+          action: "skipped"
+        });
+      }
+
+      skipToast.classList.remove('hidden');
+      setTimeout(() => {
+        skipToast.classList.add('hidden');
+      }, 1000);
+
+      currentIndex++;
+      if (currentIndex < gameScenarios.length) {
+        loadScenario(currentIndex);
+      } else {
+        showCompletionScreen();
+      }
+    }
+
+    function renderFeedback(scenario, chosenFlag) {
+      feedbackScenarioTitle.textContent = `“${scenario.title}”`;
+
+      let char = 'pip';
+      if (scenario.correct === 'yellow') char = 'quill';
+      if (scenario.correct === 'red') char = 'barnaby';
+
+      feedbackDuckReactionAvatar.innerHTML = getDuckAvatarSVG(char, 32);
+
+      feedbackFlagPill.className = "inline-flex items-center gap-1 px-2.5 py-1 rounded-xl border-[2px] border-ink text-xs font-black uppercase text-ink shadow-[1px_1px_0px_#2B2350]";
+
+      if (scenario.correct === 'green') {
+        feedbackFlagPill.style.backgroundColor = '#86E0AE';
+        feedbackFlagIcon.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 stroke-[3]"></i>`;
+        feedbackFlagLabel.textContent = "Green Flag (Pip)";
+      } else if (scenario.correct === 'yellow') {
+        feedbackFlagPill.style.backgroundColor = '#FFD95A';
+        feedbackFlagIcon.innerHTML = `<i data-lucide="help-circle" class="w-3.5 h-3.5 stroke-[3]"></i>`;
+        feedbackFlagLabel.textContent = "Yellow Flag (Quill)";
+      } else {
+        feedbackFlagPill.style.backgroundColor = '#FF8F80';
+        feedbackFlagIcon.innerHTML = `<i data-lucide="alert-octagon" class="w-3.5 h-3.5 stroke-[3]"></i>`;
+        feedbackFlagLabel.textContent = "Red Flag (Barnaby)";
+      }
+
+      const isCorrect = scenario.correct === chosenFlag;
+      if (isCorrect) {
+        feedbackMatchStatus.textContent = "✓ Spot on! (Collected)";
+        feedbackMatchStatus.className = "text-xs font-black text-ink uppercase px-2.5 py-1 rounded-xl bg-[#86E0AE] border-[2px] border-ink brutal-shadow-sm";
+        feedbackWrongBox.classList.add('hidden');
+      } else {
+        feedbackMatchStatus.textContent = `Sorted to ${chosenFlag} flag`;
+        feedbackMatchStatus.className = "text-xs font-black text-ink uppercase px-2.5 py-1 rounded-xl bg-[#FFE0A8] border-[2px] border-ink";
+        feedbackWrongBox.classList.remove('hidden');
+        const wrongMessage = scenario.ifPickedInstead && scenario.ifPickedInstead[chosenFlag];
+        feedbackWrongText.textContent = wrongMessage || "Here is why context and perspective help unpack this situation:";
+      }
+
+      feedbackExplanation.textContent = scenario.explanation;
+      feedbackTakeaway.textContent = scenario.takeaway;
+
+      if (scenario.branches) {
+        yellowForkContainer.classList.remove('hidden');
+        forkHealthyText.textContent = scenario.branches.healthy;
+        forkConcerningText.textContent = scenario.branches.concerning;
+      } else {
+        yellowForkContainer.classList.add('hidden');
+      }
+
+      lucide.createIcons();
+    }
+
+    function showCompletionScreen() {
+      let totalClassified = 0;
+      let totalSkipped = 0;
+      let correctGreen = 0;
+      let totalGreen = 0;
+      let correctYellow = 0;
+      let totalYellow = 0;
+      let correctRed = 0;
+      let totalRed = 0;
+      let totalCorrect = 0;
+
+      rawScenarios.forEach(sc => {
+        if (sc.correct === 'green') totalGreen++;
+        if (sc.correct === 'yellow') totalYellow++;
+        if (sc.correct === 'red') totalRed++;
+
+        const ans = userAnswers[sc.id];
+        if (ans) {
+          if (ans.chosen === 'skipped') {
+            totalSkipped++;
+          } else {
+            totalClassified++;
+            if (ans.isCorrect) {
+              totalCorrect++;
+              if (sc.correct === 'green') correctGreen++;
+              if (sc.correct === 'yellow') correctYellow++;
+              if (sc.correct === 'red') correctRed++;
+            }
+          }
+        }
+      });
+
+      yellowHighlightStat.textContent = `You spotted ${correctYellow} of ${totalYellow} “it depends” situations!`;
+      duckPondCount.textContent = `${totalCorrect} Happy Duck${totalCorrect === 1 ? '' : 's'}`;
+      duckPondWater.innerHTML = '';
+
+      if (totalCorrect === 0) {
+        duckPondWater.innerHTML = `
+          <div class="flex items-center gap-2 text-xs font-bold text-ink/75 py-1">
+            ${getPondSwimmerSVG(28)}
+            <span>Pip, Quill, and Barnaby are waiting here happily whenever you want to try again!</span>
+          </div>
+        `;
+      } else {
+        for (let i = 0; i < totalCorrect; i++) {
+          const duckDiv = document.createElement('div');
+          duckDiv.className = 'inline-flex items-center justify-center p-1 rounded-xl bg-white border-[2px] border-ink shadow-[1px_1px_0px_#2B2350] hover:scale-110 transition-transform';
+          duckDiv.setAttribute('title', `Pond Duck #${i + 1}`);
+          duckDiv.innerHTML = getPondSwimmerSVG(30);
+          duckPondWater.appendChild(duckDiv);
+        }
+      }
+
+      completionStats.innerHTML = `
+        <div class="flex justify-between items-center py-1 border-b-[1.5px] border-ink/15">
+          <span class="text-ink/80">Cards classified:</span>
+          <span class="font-black bg-white px-2 py-0.5 rounded-lg border border-ink">${totalClassified} of ${rawScenarios.length}</span>
+        </div>
+        ${totalSkipped > 0 ? `
+          <div class="flex justify-between items-center py-1 border-b-[1.5px] border-ink/15">
+            <span class="text-ink/80">Cards skipped:</span>
+            <span class="font-black bg-[#FFE0A8] px-2 py-0.5 rounded-lg border border-ink">${totalSkipped}</span>
+          </div>
+        ` : ''}
+        <div class="flex justify-between items-center py-1 border-b-[1.5px] border-ink/15">
+          <span class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-md bg-[#86E0AE] border border-ink inline-block"></span>
+            Green flags:
+          </span>
+          <span class="font-black">You spotted ${correctGreen} of ${totalGreen} healthy signs</span>
+        </div>
+        <div class="flex justify-between items-center py-1 border-b-[1.5px] border-ink/15">
+          <span class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-md bg-[#FFD95A] border border-dashed border-ink inline-block"></span>
+            Yellow flags:
+          </span>
+          <span class="font-black">You spotted ${correctYellow} of ${totalYellow} “it depends” situations</span>
+        </div>
+        <div class="flex justify-between items-center py-1">
+          <span class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-md bg-[#FF8F80] border border-ink inline-block"></span>
+            Red flags:
+          </span>
+          <span class="font-black">You spotted ${correctRed} of ${totalRed} boundary concerns</span>
+        </div>
+      `;
+
+      takeawaysList.innerHTML = rawScenarios.map((sc, i) => {
+        let badgeColor = "#86E0AE";
+        let badgeText = "Green Flag";
+        if (sc.correct === 'yellow') {
+          badgeColor = "#FFD95A";
+          badgeText = "Yellow Flag";
+        } else if (sc.correct === 'red') {
+          badgeColor = "#FF8F80";
+          badgeText = "Red Flag";
+        }
+
+        return `
+          <div class="p-3 rounded-2xl bg-[#FFF8ED] border-[2px] border-ink text-xs brutal-shadow-sm flex items-start gap-2.5">
+            <div class="w-6 h-6 rounded-lg border border-ink flex items-center justify-center font-black text-[10px] shrink-0" style="background-color: ${badgeColor};">
+              #${i + 1}
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between gap-1 mb-0.5">
+                <span class="font-black text-ink uppercase tracking-wide text-[11px]">${sc.title}</span>
+                <span class="text-[9px] font-black px-1.5 py-0.2 rounded border border-ink uppercase" style="background-color: ${badgeColor};">${badgeText}</span>
+              </div>
+              <span class="font-bold text-ink/85 leading-snug block">${sc.takeaway}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      showScreen(screenCompletion);
+    }
+
+    // -------------------------------------------------------------
+    // Drag & Drop & Direct Click Logic
+    // -------------------------------------------------------------
+    const dropzones = document.querySelectorAll('.dropzone');
+
+    function checkDropCollision(x, y) {
+      for (const zone of dropzones) {
+        const rect = zone.getBoundingClientRect();
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+          return zone.getAttribute('data-flag');
+        }
+      }
+      return null;
+    }
+
+    // HTML5 Drag and Drop handlers on card
+    scenarioCard.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', 'duck-card');
+      e.dataTransfer.effectAllowed = 'move';
+      scenarioCard.classList.add('card-dragging');
+    });
+
+    scenarioCard.addEventListener('dragend', () => {
+      scenarioCard.classList.remove('card-dragging');
+      dropzones.forEach(z => z.classList.remove('drop-target-active'));
+    });
+
+    // Dropzone listeners for HTML5 drag-and-drop & clicks
+    dropzones.forEach(zone => {
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        zone.classList.add('drop-target-active');
+      });
+
+      zone.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        zone.classList.add('drop-target-active');
+      });
+
+      zone.addEventListener('dragleave', (e) => {
+        if (!zone.contains(e.relatedTarget)) {
+          zone.classList.remove('drop-target-active');
+        }
+      });
+
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drop-target-active');
+        const flag = zone.getAttribute('data-flag');
+        if (flag) {
+          handleClassification(flag);
+        }
+      });
+
+      // Clicking anywhere on the drop zone container evaluates answer
+      zone.addEventListener('click', (e) => {
+        // If the button inside was clicked, it also fires its own onclick
+        if (e.target.tagName !== 'BUTTON') {
+          const flag = zone.getAttribute('data-flag');
+          if (flag) {
+            handleClassification(flag);
+          }
+        }
+      });
+    });
+
+    // Touch and Pointer Drag Support for smooth cross-device action
+    let activePointerId = null;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    scenarioCard.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      activePointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      isDragging = false;
+
+      function onPointerMove(moveEvent) {
+        if (moveEvent.pointerId !== activePointerId) return;
+        const dx = moveEvent.clientX - startX;
+        const dy = moveEvent.clientY - startY;
+
+        if (!isDragging && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+          isDragging = true;
+          scenarioCard.classList.add('card-dragging');
+        }
+
+        if (isDragging) {
+          scenarioCard.style.setProperty('--drag-x', `${dx}px`);
+          scenarioCard.style.setProperty('--drag-y', `${dy}px`);
+          const hoveredFlag = checkDropCollision(moveEvent.clientX, moveEvent.clientY);
+          dropzones.forEach(z => {
+            if (z.getAttribute('data-flag') === hoveredFlag) {
+              z.classList.add('drop-target-active');
+            } else {
+              z.classList.remove('drop-target-active');
+            }
+          });
+        }
+      }
+
+      function onPointerUp(upEvent) {
+        if (upEvent.pointerId !== activePointerId) return;
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+
+        scenarioCard.style.removeProperty('--drag-x');
+        scenarioCard.style.removeProperty('--drag-y');
+        scenarioCard.classList.remove('card-dragging');
+        dropzones.forEach(z => z.classList.remove('drop-target-active'));
+
+        if (isDragging) {
+          isDragging = false;
+          const droppedFlag = checkDropCollision(upEvent.clientX, upEvent.clientY);
+          if (droppedFlag) {
+            handleClassification(droppedFlag);
+          }
+        } else {
+          toggleCardSelection();
+        }
+        activePointerId = null;
+      }
+
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    });
+
+    scenarioCard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleCardSelection();
+      }
+    });
+
+    // -------------------------------------------------------------
+    // Button Event Listeners
+    // -------------------------------------------------------------
+    btnStart.addEventListener('click', initGame);
+    btnRestart.addEventListener('click', initGame);
+
+    btnExit.addEventListener('click', () => {
+      showScreen(screenWelcome);
+    });
+
+    btnSkip.addEventListener('click', handleSkip);
+
+    btnContinue.addEventListener('click', () => {
+      currentIndex++;
+      if (currentIndex < gameScenarios.length) {
+        loadScenario(currentIndex);
+        showScreen(screenPlay);
+      } else {
+        showCompletionScreen();
+      }
+    });
+
+    // Start in game play mode by default
+    initGame();
+  </script>
+</body></html>
