@@ -1,27 +1,39 @@
+import { useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import type { GameId } from "@/components/GamesHub";
 
-const gameSources: Record<Exclude<GameId, "game1" | "game2">, { src: string; title: string }> = {
+const gameSources: Record<Extract<GameId, "game3">, { src: string; title: string }> = {
   game3: {
     src: "/games/game3/code.html",
     title: "Red Flag or Green Flag?",
   },
-  game4: {
-    src: "/games/game4/code.html",
-    title: "What Would You Do?",
-  },
 };
 
 interface GameFrameProps {
-  gameId: Exclude<GameId, "game1" | "game2">;
+  gameId: Extract<GameId, "game3">;
   onBack: () => void;
 }
 
 export function GameFrame({ gameId, onBack }: GameFrameProps) {
   const game = gameSources[gameId];
+  const frameRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (
+        event.origin === window.location.origin &&
+        event.source === frameRef.current?.contentWindow &&
+        event.data?.type === "shy:exit-to-hub"
+      ) {
+        onBack();
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [onBack]);
 
   return (
-    <main className="relative min-h-screen bg-ink">
+    <main className="relative min-h-screen bg-cream">
       <button
         type="button"
         onClick={onBack}
@@ -31,6 +43,7 @@ export function GameFrame({ gameId, onBack }: GameFrameProps) {
         Games Hub
       </button>
       <iframe
+        ref={frameRef}
         title={game.title}
         src={game.src}
         className="block min-h-screen w-full border-0"

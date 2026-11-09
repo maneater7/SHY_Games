@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from "react";
-import { HeartHandshake, LogOut } from "lucide-react";
+import { ArrowLeft, HeartHandshake } from "lucide-react";
 import { Backdrop } from "@/components/game/Backdrop";
 import { CompletionScreen } from "@/components/game/CompletionScreen";
 import { FeedbackScreen } from "@/components/game/FeedbackScreen";
@@ -135,17 +135,8 @@ export function PovGame({ onEvent, onExitToHub }: PovGameProps) {
             }}
             className={secondaryButton}
           >
-            {phase.name === "welcome" ? (
-              <>
-                <LogOut className="h-4 w-4 rotate-180" aria-hidden="true" />
-                Games Hub
-              </>
-            ) : (
-              <>
-                <LogOut className="h-4 w-4" aria-hidden="true" />
-                Exit
-              </>
-            )}
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Games Hub
           </button>
         )}
       </header>

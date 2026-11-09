@@ -1,0 +1,13 @@
+@keyframes wwyd-face-pop {
+  0% { transform: scale(0.82); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wwyd-face-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wwyd-face-pop 420ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  }
+}

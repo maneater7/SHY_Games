@@ -6,4 +6,4 @@ export interface SupportResource {
 
 export const supportResources: SupportResource[] = [];
 
-export const PEER_ADVOCATE_URL = "#";
+export const PEER_ADVOCATE_URL: string | null = null;

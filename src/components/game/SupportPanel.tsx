@@ -37,10 +37,12 @@ export function SupportPanel() {
           ))}
         </ul>
       )}
-      <a href={PEER_ADVOCATE_URL} target="_blank" rel="noopener noreferrer" className={primaryButton}>
-        <UserRound className="h-5 w-5" aria-hidden="true" />
-        Talk to a SHY Peer Advocate
-      </a>
+      {PEER_ADVOCATE_URL && (
+        <a href={PEER_ADVOCATE_URL} target="_blank" rel="noopener noreferrer" className={primaryButton}>
+          <UserRound className="h-5 w-5" aria-hidden="true" />
+          Talk to a SHY Peer Advocate
+        </a>
+      )}
     </section>
   );
 }

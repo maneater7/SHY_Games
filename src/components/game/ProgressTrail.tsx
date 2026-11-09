@@ -14,14 +14,15 @@ interface QuestionProgressProps {
   total: number;
   topic: string;
   segments: TrailSegment[];
+  label?: string;
 }
 
-export function QuestionProgress({ index, total, topic, segments }: QuestionProgressProps) {
+export function QuestionProgress({ index, total, topic, segments, label = "Question" }: QuestionProgressProps) {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className={`${chip} bg-peach`}>
-          Question {index + 1} of {total}
+          {label} {index + 1} of {total}
         </span>
         <span className="text-right text-sm font-bold">{topic}</span>
       </div>

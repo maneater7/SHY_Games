@@ -1,14 +1,7 @@
-import type { LucideIcon } from "lucide-react";
-import {
-  ArrowRight,
-  BookHeart,
-  Compass,
-  FlagTriangleRight,
-  Lightbulb,
-  MessageCircleHeart,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Info } from "lucide-react";
 import { Character } from "@/components/Character";
+import { CapybaraCard } from "@/components/myth-or-fact/CapybaraCard";
+import "./games-hub.css";
 
 export type GameId = "game1" | "game2" | "game3" | "game4";
 
@@ -16,8 +9,8 @@ interface GameDefinition {
   id: GameId;
   title: string;
   description: string;
-  accent: string;
-  icon: LucideIcon;
+  topic: string;
+  duration: string;
   available: boolean;
 }
 
@@ -26,39 +19,39 @@ const games: GameDefinition[] = [
     id: "game1",
     title: "POV: Your Friend Texted You This",
     description: "Practice kind, supportive replies to messages from a friend.",
-    accent: "bg-turquoise",
-    icon: MessageCircleHeart,
+    topic: "Empathy & peer support",
+    duration: "5-7 min",
     available: true,
   },
   {
     id: "game2",
-    title: "Myth or Fact? – Let’s Talk Sexual Health",
-    description: "Sort common sexual-health statements and learn what the facts say.",
-    accent: "bg-lavender",
-    icon: Lightbulb,
-    available: false,
+    title: "Myth or Fact? - Let's Talk Sexual Health",
+    description: "Meet the capybara quiz buddies and untangle common myths about sexual and reproductive health.",
+    topic: "Knowledge & misinformation",
+    duration: "3-5 min",
+    available: true,
   },
   {
     id: "game3",
     title: "Red Flag or Green Flag?",
     description: "Explore relationship situations and decide what each one might mean.",
-    accent: "bg-meadow",
-    icon: FlagTriangleRight,
+    topic: "Consent & boundaries",
+    duration: "3-5 min",
     available: true,
   },
   {
     id: "game4",
     title: "What Would You Do?",
-    description: "Put yourself in someone else’s shoes and choose a caring next step.",
-    accent: "bg-soft-pink",
-    icon: Compass,
+    description: "You're the main character. Pick your move in ten tricky everyday moments.",
+    topic: "Decisions & self-protection",
+    duration: "5-7 min",
     available: true,
   },
 ];
 
 function FlagDuck() {
   return (
-    <svg viewBox="0 0 120 110" role="img" aria-label="Duck holding a green flag" className="hub-float h-32 w-32">
+    <svg viewBox="0 0 120 110" role="img" aria-label="Duck holding a green flag" className="hub-float">
       <ellipse cx="55" cy="92" rx="38" ry="8" fill="#4DEBE3" stroke="#2B2350" strokeWidth="3" />
       <ellipse cx="55" cy="67" rx="30" ry="22" fill="#FFE0A8" stroke="#2B2350" strokeWidth="3" />
       <circle cx="76" cy="39" r="20" fill="#FFE0A8" stroke="#2B2350" strokeWidth="3" />
@@ -73,7 +66,7 @@ function FlagDuck() {
 
 function ThoughtfulHuman() {
   return (
-    <svg viewBox="0 0 120 140" role="img" aria-label="Thoughtful young person exploring" className="hub-sway h-36 w-32">
+    <svg viewBox="0 0 120 140" role="img" aria-label="Thoughtful young person exploring" className="hub-sway">
       <ellipse cx="61" cy="130" rx="35" ry="6" fill="#B9A5F5" opacity="0.8" />
       <path d="M42 78 L34 126 L51 126 L60 92 L69 126 L87 126 L78 78 Z" fill="#2B2350" stroke="#2B2350" strokeWidth="3" />
       <path d="M37 62 Q60 52 83 62 L78 91 Q60 99 42 91 Z" fill="#4DEBE3" stroke="#2B2350" strokeWidth="3" />
@@ -91,14 +84,10 @@ function ThoughtfulHuman() {
 
 function GameCharacter({ gameId }: { gameId: GameId }) {
   if (gameId === "game1") {
-    return <Character expression="happy" pose="hop" className="h-32 w-32" />;
+    return <Character expression="happy" pose="idle" className="lobby-character-svg hub-float" />;
   }
   if (gameId === "game2") {
-    return (
-      <span className="hub-sway inline-block">
-        <Character expression="thoughtful" pose="lean" className="h-32 w-32" />
-      </span>
-    );
+    return <span className="hub-float"><CapybaraCard label="Myth or Fact?" happy /></span>;
   }
   if (gameId === "game3") {
     return <FlagDuck />;
@@ -106,99 +95,148 @@ function GameCharacter({ gameId }: { gameId: GameId }) {
   return <ThoughtfulHuman />;
 }
 
+function GameCard({ game, index, onSelect }: { game: GameDefinition; index: number; onSelect: () => void }) {
+  const scene = (
+    <div className="lobby-card-scene" aria-hidden="true">
+      <span className="lobby-scene-ring" />
+      <span className="lobby-scene-spark">+</span>
+      <div className="lobby-card-character">
+        <GameCharacter gameId={game.id} />
+      </div>
+      <span className="lobby-level-number">{String(index + 1).padStart(2, "0")}</span>
+    </div>
+  );
+
+  const copy = (
+    <div className="lobby-card-copy">
+      <div className="lobby-card-meta">
+        <span>GAME {String(index + 1).padStart(2, "0")}</span>
+        <span>{game.available ? "READY TO PLAY" : "IN THE WORKS"}</span>
+      </div>
+      <h3>{game.title}</h3>
+      <p>{game.description}</p>
+      <div className="lobby-card-bottom">
+        <span>
+          {game.topic}
+          <small>{game.duration} · at your pace</small>
+        </span>
+        <span className="lobby-play">
+          {game.available ? "Play" : "Soon"}
+          {game.available && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
+        </span>
+      </div>
+    </div>
+  );
+
+  return (
+    <article className={`lobby-game-card lobby-card-${game.id} ${game.available ? "lobby-is-playable" : "lobby-is-coming-soon"}`}>
+      {game.available ? (
+        <button type="button" onClick={onSelect} className="lobby-game-link">
+          {scene}
+          {copy}
+        </button>
+      ) : (
+        <div className="lobby-game-link">
+          {scene}
+          {copy}
+        </div>
+      )}
+    </article>
+  );
+}
+
 interface GamesHubProps {
   onSelectGame: (gameId: GameId) => void;
 }
 
 export function GamesHub({ onSelectGame }: GamesHubProps) {
+  const readyCount = games.filter((game) => game.available).length;
+
   return (
-    <main className="min-h-screen overflow-hidden bg-cream px-5 py-8 text-ink sm:px-8 sm:py-12">
-      <div className="mx-auto max-w-6xl">
-        <header className="mx-auto max-w-3xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border-[3px] border-ink bg-turquoise px-4 py-2 font-black uppercase tracking-wider shadow-chunky-sm">
-            <Sparkles className="h-5 w-5" aria-hidden="true" />
-            SHY Games Hub
+    <div className="lobby-shell">
+      <div className="lobby-backdrop" aria-hidden="true">
+        <span className="lobby-orbit lobby-orbit-a" />
+        <span className="lobby-orbit lobby-orbit-b" />
+        <span className="lobby-bg-token">?</span>
+      </div>
+
+      <header className="lobby-header">
+        <div className="lobby-wordmark">
+          <img src="/tuki_logo.png" alt="SHY - Sexual Health for Youth" className="lobby-logo" />
+          <div>
+            THE PLAY ROOM
+            <small>Sexual Health for Youth</small>
           </div>
-          <div className="flex items-end justify-center gap-3">
-            <Character expression="happy" pose="cheer" className="hidden h-28 w-28 sm:block" />
-            <div>
-              <h1 className="text-4xl font-extrabold leading-tight sm:text-6xl">
-                Learn, play, <span className="inline-block -rotate-2 rounded-2xl border-[3px] border-ink bg-sun px-3 shadow-chunky-sm">look out</span>
-              </h1>
-              <p className="mt-4 text-lg font-semibold leading-relaxed">
-                Pick a game and explore healthy relationships, sexual health, and looking out for yourself and others.
-              </p>
+        </div>
+        <span className="lobby-live">
+          <span />
+          {readyCount} games live
+        </span>
+      </header>
+
+      <main className="lobby-main">
+        <section className="lobby-hero" aria-labelledby="hub-heading">
+          <div className="lobby-hero-copy">
+            <p className="lobby-eyebrow">A LITTLE PLAY. A NEW PERSPECTIVE.</p>
+            <h1 id="hub-heading">
+              Press play.
+              <br />
+              <span>Stay curious.</span>
+            </h1>
+            <p className="lobby-hero-description">
+              Big questions. Small games. Explore friendships, boundaries, and
+              sexual health in a space where you can just be you.
+            </p>
+            <a href="#game-library" className="lobby-choose">
+              Choose your game <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+          <div className="lobby-guide">
+            <div className="lobby-speech">
+              Your next little
+              <br />
+              plot twist starts here.
             </div>
-          </div>
-        </header>
-
-        <section aria-labelledby="games-heading" className="mt-10">
-          <div className="mb-5 flex items-center justify-between gap-4">
-            <h2 id="games-heading" className="text-2xl font-extrabold sm:text-3xl">
-              Choose your game
-            </h2>
-            <span className="rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-black uppercase shadow-chunky-sm">
-              Four ways to play
-            </span>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {games.map((game, index) => {
-              const Icon = game.icon;
-              return (
-                <article
-                  key={game.id}
-                  className={`group relative overflow-hidden rounded-[2rem] border-[3px] border-ink bg-white p-5 shadow-chunky transition-transform duration-200 hover:-translate-y-1 ${
-                    !game.available ? "opacity-90" : ""
-                  }`}
-                >
-                  <div className={`absolute -right-8 -top-8 h-32 w-32 rounded-full border-[3px] border-ink ${game.accent} opacity-80`} />
-                  <div className="relative flex min-h-72 flex-col">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className={`flex h-16 w-16 items-center justify-center rounded-2xl border-[3px] border-ink ${game.accent} shadow-chunky-sm`}>
-                        {game.id === "game1" ? (
-                          <BookHeart className="h-8 w-8" aria-hidden="true" />
-                        ) : (
-                          <Icon className="h-8 w-8" aria-hidden="true" />
-                        )}
-                      </div>
-                      <span className="rounded-full border-2 border-ink bg-cream px-3 py-1 text-xs font-black uppercase">
-                        Game {index + 1}
-                      </span>
-                    </div>
-                    <div className="pointer-events-none absolute right-2 top-16 z-0" aria-hidden="true">
-                      <GameCharacter gameId={game.id} />
-                    </div>
-                    <h3 className="relative z-10 mt-6 max-w-[64%] text-2xl font-extrabold leading-tight">{game.title}</h3>
-                    <p className="relative z-10 mt-3 max-w-[68%] text-base font-semibold leading-relaxed text-ink/80">{game.description}</p>
-                    <div className="mt-auto pt-6">
-                      <button
-                        type="button"
-                        disabled={!game.available}
-                        onClick={() => game.available && onSelectGame(game.id)}
-                        className={`inline-flex items-center gap-2 rounded-xl border-[3px] border-ink px-4 py-2.5 font-black shadow-chunky-sm transition-transform ${
-                          game.available
-                            ? "bg-turquoise hover:-translate-y-0.5"
-                            : "cursor-not-allowed bg-cream text-ink/60"
-                        }`}
-                      >
-                        {game.available ? "Play Game" : "Coming soon"}
-                        {game.available && <ArrowRight className="h-5 w-5" aria-hidden="true" />}
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+            <span className="lobby-guide-spark lobby-spark-left" aria-hidden="true">✦</span>
+            <div className="lobby-capy"><CapybaraCard label="Let's play!" happy /></div>
+            <span className="lobby-guide-spark lobby-spark-right" aria-hidden="true">+</span>
+            <span className="lobby-guide-platform" aria-hidden="true" />
+            <span className="lobby-guide-tag">YOUR CAPYBARA CO-PILOT</span>
           </div>
         </section>
 
-        <footer className="mt-10 flex items-center justify-center gap-2 text-center text-sm font-bold text-ink/70">
-          <span aria-hidden="true">🌱</span>
-          Take your time. You can leave any game whenever you want.
-          <span aria-hidden="true">🌱</span>
-        </footer>
-      </div>
-    </main>
+        <div className="lobby-heads-up" role="note">
+          <Info className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+          <p>
+            <strong>A gentle heads-up.</strong> These games touch on
+            relationships, consent, STIs, contraception, menstrual health, and
+            how we look out for each other. You can skip any question, or leave
+            any game whenever you want.
+          </p>
+        </div>
+
+        <section id="game-library" className="lobby-library" aria-labelledby="lobby-library-heading">
+          <div className="lobby-library-top">
+            <div>
+              <p className="lobby-eyebrow">THE GAME SELECT</p>
+              <h2 id="lobby-library-heading">Pick your next adventure.</h2>
+            </div>
+            <span className="lobby-availability">
+              {readyCount} READY <span>/</span> {games.length} WORLDS
+            </span>
+          </div>
+          <div className="lobby-games-grid">
+            {games.map((game, index) => (
+              <GameCard
+                key={game.id}
+                game={game}
+                index={index}
+                onSelect={() => onSelectGame(game.id)}
+              />
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
