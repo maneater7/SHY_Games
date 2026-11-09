@@ -5,6 +5,7 @@ import { createInitialState, gameReducer, startRun, summarize, type GameState } 
 
 const bestId = (index: number) => scenarios[index].options.find((option) => option.isBest)!.id;
 const otherId = (index: number) => scenarios[index].options.find((option) => !option.isBest)!.id;
+const canonicalRun = () => ({ ...startRun(), sequence: scenarios.map((scenario) => scenario.id) });
 
 test("scenario content is complete and safe to shuffle", () => {
   assert.equal(scenarios.length, 10);
@@ -28,9 +29,10 @@ test("scenario content is complete and safe to shuffle", () => {
   }
 });
 
-test("a new run shuffles options without losing any", () => {
+test("a new run shuffles options and scenario order without losing any", () => {
   const state = startRun(() => 0);
   assert.deepEqual(state.phase, { name: "scene", index: 0 });
+  assert.deepEqual([...state.sequence].sort(), scenarios.map((scenario) => scenario.id).sort());
   for (const scenario of scenarios) {
     const shuffled = state.orders[scenario.id].map((option) => option.id).sort();
     assert.deepEqual(shuffled, scenario.options.map((option) => option.id).sort());
@@ -38,17 +40,19 @@ test("a new run shuffles options without losing any", () => {
 });
 
 test("only the first choice counts, but players can try other moves", () => {
-  let state = startRun();
+  let state = canonicalRun();
   state = gameReducer(state, { type: "choose", optionId: otherId(0) });
   assert.deepEqual(state.phase, { name: "outcome", index: 0, chosenId: otherId(0) });
   state = gameReducer(state, { type: "retry" });
   state = gameReducer(state, { type: "choose", optionId: bestId(0) });
   assert.equal(state.firstChoices.s1, otherId(0));
   assert.equal(state.phase.name === "outcome" && state.phase.chosenId, bestId(0));
+  state = gameReducer(gameReducer(state, { type: "retry" }), { type: "choose", optionId: otherId(0) });
+  assert.deepEqual(state.retried, ["s1"], "retries are counted once per scenario");
 });
 
 test("skipping is blocked once a scenario has been answered", () => {
-  let state = startRun();
+  let state = canonicalRun();
   state = gameReducer(state, { type: "choose", optionId: bestId(0) });
   state = gameReducer(state, { type: "retry" });
   const before = state;
@@ -57,12 +61,12 @@ test("skipping is blocked once a scenario has been answered", () => {
 });
 
 test("options from another scenario are rejected", () => {
-  const state = startRun();
+  const state = canonicalRun();
   assert.equal(gameReducer(state, { type: "choose", optionId: bestId(3) }), state);
 });
 
 test("a full run reaches the summary with correct counts", () => {
-  let state: GameState = startRun();
+  let state: GameState = canonicalRun();
   scenarios.forEach((_, index) => {
     if (index === 2) {
       state = gameReducer(state, { type: "skip" });

@@ -16,6 +16,7 @@ export type Phase =
 export interface GameState {
   phase: Phase;
   orders: Record<string, AnswerOption[]>;
+  questionOrder: string[];
   firstChoices: Record<string, string>;
   skipped: string[];
   lastSkipped: boolean;
@@ -49,10 +50,16 @@ export function createInitialState(): GameState {
   return {
     phase: { name: "welcome" },
     orders: {},
+    questionOrder: [],
     firstChoices: {},
     skipped: [],
     lastSkipped: false,
   };
+}
+
+export function questionAt(state: GameState, index: number): Question {
+  const id = state.questionOrder[index];
+  return questions.find((question) => question.id === id) ?? questions[index];
 }
 
 function phaseAfter(index: number): Phase {
@@ -63,7 +70,12 @@ function phaseAfter(index: number): Phase {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "newGame":
-      return { ...createInitialState(), orders: buildOrders(), phase: { name: "intro" } };
+      return {
+        ...createInitialState(),
+        orders: buildOrders(),
+        questionOrder: shuffle(questions.map((question) => question.id)),
+        phase: { name: "intro" },
+      };
 
     case "begin":
       return { ...state, phase: { name: "scenario", index: 0 } };
