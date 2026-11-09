@@ -1,4 +1,4 @@
-import { scenarios, type ScenarioOption } from "../data/whatWouldYouDoScenarios.ts";
+import { scenarios, type Scenario, type ScenarioOption } from "../data/whatWouldYouDoScenarios.ts";
 
 export type Phase =
   | { name: "welcome" }
@@ -9,8 +9,10 @@ export type Phase =
 export interface GameState {
   phase: Phase;
   orders: Record<string, ScenarioOption[]>;
+  sequence: string[];
   firstChoices: Record<string, string>;
   skipped: string[];
+  retried: string[];
 }
 
 export type GameAction =
@@ -31,19 +33,28 @@ export function shuffle<T>(items: readonly T[], random = Math.random): T[] {
 }
 
 export function createInitialState(): GameState {
-  return { phase: { name: "welcome" }, orders: {}, firstChoices: {}, skipped: [] };
+  return { phase: { name: "welcome" }, orders: {}, sequence: [], firstChoices: {}, skipped: [], retried: [] };
 }
 
 export function startRun(random = Math.random): GameState {
   return {
     ...createInitialState(),
     phase: { name: "scene", index: 0 },
+    sequence: shuffle(
+      scenarios.map((scenario) => scenario.id),
+      random,
+    ),
     orders: Object.fromEntries(scenarios.map((scenario) => [scenario.id, shuffle(scenario.options, random)])),
   };
 }
 
-function phaseAfter(index: number): Phase {
-  return index + 1 < scenarios.length ? { name: "scene", index: index + 1 } : { name: "complete" };
+export function scenarioAt(state: GameState, index: number): Scenario {
+  const id = state.sequence[index];
+  return scenarios.find((scenario) => scenario.id === id) ?? scenarios[index];
+}
+
+function phaseAfter(state: GameState, index: number): Phase {
+  return index + 1 < state.sequence.length ? { name: "scene", index: index + 1 } : { name: "complete" };
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -54,7 +65,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "choose": {
       if (phase.name !== "scene") return state;
-      const scenario = scenarios[phase.index];
+      const scenario = scenarioAt(state, phase.index);
       if (!scenario.options.some((option) => option.id === action.optionId)) return state;
       return {
         ...state,
@@ -65,20 +76,27 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "skip": {
       if (phase.name !== "scene") return state;
-      const { id } = scenarios[phase.index];
+      const { id } = scenarioAt(state, phase.index);
       if (state.firstChoices[id] !== undefined) return state;
       return {
         ...state,
-        phase: phaseAfter(phase.index),
+        phase: phaseAfter(state, phase.index),
         skipped: state.skipped.includes(id) ? state.skipped : [...state.skipped, id],
       };
     }
 
-    case "retry":
-      return phase.name === "outcome" ? { ...state, phase: { name: "scene", index: phase.index } } : state;
+    case "retry": {
+      if (phase.name !== "outcome") return state;
+      const { id } = scenarioAt(state, phase.index);
+      return {
+        ...state,
+        phase: { name: "scene", index: phase.index },
+        retried: state.retried.includes(id) ? state.retried : [...state.retried, id],
+      };
+    }
 
     case "next":
-      return phase.name === "outcome" ? { ...state, phase: phaseAfter(phase.index) } : state;
+      return phase.name === "outcome" ? { ...state, phase: phaseAfter(state, phase.index) } : state;
 
     case "exit":
       return createInitialState();

@@ -13,7 +13,10 @@ import {
   readLatestScore,
   saveLatestScore,
 } from "@/lib/mythOrFactScore";
+import { beginAnalyticsSession, recordGameExit, recordGameStart, submitGameRun } from "@/lib/analytics";
 import "./myth-or-fact.css";
+
+const ANALYTICS_ID = "myth-or-fact";
 
 interface MythOrFactGameProps {
   onComplete?: (result: ScoreSummary) => void;
@@ -350,23 +353,35 @@ export default function MythOrFactGame({ onComplete, onExitToHub }: MythOrFactGa
   }, [state]);
 
   useEffect(() => {
+    beginAnalyticsSession();
+  }, []);
+
+  useEffect(() => {
     if (state.phase !== "complete" || savedCompletion.current) return;
 
     const result = scoreRun(state);
     savedCompletion.current = true;
     saveLatestScore(result);
     setLatestScore(result);
+    void submitGameRun(ANALYTICS_ID, { answers: state.answers, skippedQuestionIds: state.skippedQuestionIds });
     onComplete?.(result);
   }, [onComplete, state]);
 
   const startGame = () => {
     savedCompletion.current = false;
+    void recordGameStart(ANALYTICS_ID);
     dispatch({ type: "start" });
   };
 
   const playAgain = () => {
     savedCompletion.current = false;
+    void recordGameStart(ANALYTICS_ID);
     dispatch({ type: "playAgain" });
+  };
+
+  const exitToHub = () => {
+    if (currentQuestion) void recordGameExit(ANALYTICS_ID, currentQuestion.id);
+    onExitToHub?.();
   };
 
   const clearScore = () => {
@@ -382,7 +397,7 @@ export default function MythOrFactGame({ onComplete, onExitToHub }: MythOrFactGa
         <Brand />
         <nav className="header-actions game-navigation" aria-label="Game navigation">
           {onExitToHub && (
-            <button className="button button-exit" aria-label="Back to games hub" onClick={onExitToHub} type="button">
+            <button className="button button-exit" aria-label="Back to games hub" onClick={exitToHub} type="button">
               <NavigationIcon /> Games Hub
             </button>
           )}

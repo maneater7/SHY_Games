@@ -1,21 +1,23 @@
 import { useEffect, useReducer, useRef, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle2, HeartHandshake, Info, Lightbulb, RotateCcw, SkipForward } from "lucide-react";
-import { QuestionProgress, type TrailSegment } from "@/components/game/ProgressTrail";
+import { type TrailSegment } from "@/components/game/ProgressTrail";
 import { SupportPanel } from "@/components/game/SupportPanel";
 import { badge, chip, optionCard, optionTones, panel, primaryButton, secondaryButton, skipButton } from "@/components/game/ui";
 import { scenarios, type Mood, type Scenario, type ScenarioOption } from "@/data/whatWouldYouDoScenarios";
-import { createInitialState, gameReducer, summarize, type GameState } from "@/game/whatWouldYouDoState";
+import { createInitialState, gameReducer, scenarioAt, summarize, type GameState } from "@/game/whatWouldYouDoState";
+import { beginAnalyticsSession, recordGameExit, recordGameStart, submitGameRun } from "@/lib/analytics";
 import { CastLineup, SceneArt } from "./Scenes";
 import "./what-would-you-do.css";
 
 const LETTERS = ["A", "B", "C"];
 const TOTAL = scenarios.length;
+const ANALYTICS_ID = "what-would-you-do";
 
 function segmentsFor(state: GameState, current: number): TrailSegment[] {
-  return scenarios.map((scenario, i) => {
+  return state.sequence.map((id, i) => {
     if (i === current) return "current";
-    if (state.firstChoices[scenario.id] !== undefined) return "done";
-    if (state.skipped.includes(scenario.id)) return "skipped";
+    if (state.firstChoices[id] !== undefined) return "done";
+    if (state.skipped.includes(id)) return "skipped";
     return "todo";
   });
 }
@@ -27,6 +29,50 @@ function useFocusOnMount<T extends HTMLElement>(key: string) {
     ref.current?.focus({ preventScroll: true });
   }, [key]);
   return ref;
+}
+
+const NODE_CLASS: Record<TrailSegment, string> = {
+  done: "bg-turquoise",
+  skipped: "bg-lavender",
+  current: "bg-peach",
+  todo: "bg-cream",
+};
+
+// The journey through the ten moments drawn as a little road: one stop per
+// scenario and a pin that slides along as the player moves forward.
+function Roadmap({ state, index, topic }: { state: GameState; index: number; topic: string }) {
+  const total = state.sequence.length || TOTAL;
+  const pct = total > 1 ? index / (total - 1) : 0;
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className={`${chip} bg-peach`}>Scenario {index + 1} of {total}</span>
+        <span className="text-right text-sm font-bold">{topic}</span>
+      </div>
+      <div
+        role="progressbar"
+        aria-label="Journey progress"
+        aria-valuemin={1}
+        aria-valuemax={total}
+        aria-valuenow={index + 1}
+        className="relative h-12 rounded-full border-[3px] border-ink bg-white/70"
+      >
+        <div aria-hidden="true" className="absolute inset-x-7 top-1/2 h-1 -translate-y-1/2 rounded-full bg-ink/15" />
+        <div aria-hidden="true" className="absolute inset-x-7 top-1/2 flex -translate-y-1/2 items-center justify-between">
+          {segmentsFor(state, index).map((segment, i) => (
+            <span key={i} className={`h-2.5 w-2.5 rounded-full border-2 border-ink transition-colors duration-300 ${NODE_CLASS[segment]}`} />
+          ))}
+        </div>
+        <span
+          aria-hidden="true"
+          className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-ink bg-sun shadow-chunky-sm transition-[left] duration-700 ease-in-out motion-reduce:transition-none"
+          style={{ left: `calc(1.75rem + (100% - 3.5rem) * ${pct})` }}
+        >
+          <span className="absolute left-1/2 top-full h-2 w-0.5 -translate-x-1/2 bg-ink/40" />
+        </span>
+      </div>
+    </div>
+  );
 }
 
 function TownBackdrop() {
@@ -71,6 +117,7 @@ function SpeechBubble({ scenario }: { scenario: Scenario }) {
 }
 
 function Welcome({ onStart }: { onStart: () => void }) {
+  const headingRef = useFocusOnMount<HTMLHeadingElement>("welcome");
   const steps = [
     ["Read the moment", "Someone says something. Take a second with it."],
     ["Make your move", "Pick what you’d really do. There’s no timer."],
@@ -86,7 +133,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
         <p className="mx-auto w-fit -rotate-2 rounded-full border-[3px] border-ink bg-peach px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider shadow-chunky-sm">
           Game 04 · Decisions &amp; self-protection
         </p>
-        <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] sm:text-6xl">What Would You Do?</h1>
+        <h1 ref={headingRef} tabIndex={-1} className="mt-5 text-4xl font-extrabold leading-[1.05] focus:outline-none sm:text-6xl">What Would You Do?</h1>
         <p className="mt-2 text-xl font-extrabold text-lavender-deep sm:text-2xl">Put yourself in their shoes.</p>
         <p className="mx-auto mt-4 max-w-xl text-lg font-semibold leading-relaxed">
           Ten everyday moments: a hangout, a group chat, a clinic visit, a friend with a secret. You’re the main
@@ -133,14 +180,14 @@ function SceneScreen({
   onChoose: (optionId: string) => void;
   onSkip: () => void;
 }) {
-  const scenario = scenarios[index];
+  const scenario = scenarioAt(state, index);
   const earlier = state.firstChoices[scenario.id];
   const headingRef = useFocusOnMount<HTMLHeadingElement>(`scene-${scenario.id}`);
 
   return (
     <section className="space-y-6 pov-rise-in">
       <h1 className="sr-only">What Would You Do? Scenario {index + 1}: {scenario.topic}</h1>
-      <QuestionProgress label="Scenario" index={index} total={TOTAL} topic={scenario.topic} segments={segmentsFor(state, index)} />
+      <Roadmap state={state} index={index} topic={scenario.topic} />
 
       <div>
         <SceneFrame scenario={scenario} mood={scenario.startMood} />
@@ -153,12 +200,12 @@ function SceneScreen({
         <h2
           ref={headingRef}
           tabIndex={-1}
-          id="move-heading"
+          id={`move-heading-${scenario.id}`}
           className="inline-block rounded-full border-2 border-ink bg-cream px-4 py-1 text-sm font-extrabold focus:outline-none"
         >
           What would you do?
         </h2>
-        <div role="group" aria-labelledby="move-heading" className="space-y-4">
+        <div role="group" aria-labelledby={`move-heading-${scenario.id}`} className="space-y-4">
           {state.orders[scenario.id].map((option, i) => (
             <button key={option.id} type="button" onClick={() => onChoose(option.id)} className={optionCard(optionTones[i])}>
               <span className={badge}>{LETTERS[i]}</span>
@@ -194,7 +241,7 @@ function OutcomeScreen({
   onRetry: () => void;
   onNext: () => void;
 }) {
-  const scenario = scenarios[index];
+  const scenario = scenarioAt(state, index);
   const chosen = scenario.options.find((option) => option.id === chosenId);
   const best = scenario.options.find((option) => option.isBest);
   const headingRef = useFocusOnMount<HTMLHeadingElement>(`outcome-${chosenId}`);
@@ -206,7 +253,7 @@ function OutcomeScreen({
   return (
     <section className="space-y-6 pov-rise-in">
       <h1 className="sr-only">What Would You Do? Scenario {index + 1} outcome: {scenario.topic}</h1>
-      <QuestionProgress label="Scenario" index={index} total={TOTAL} topic={scenario.topic} segments={segmentsFor(state, index)} />
+      <Roadmap state={state} index={index} topic={scenario.topic} />
 
       <div className="ml-auto max-w-[88%] rounded-3xl border-[3px] border-ink bg-peach px-5 py-4 shadow-chunky-sm">
         <span className="text-xs font-extrabold uppercase tracking-wider">Your move</span>
@@ -366,11 +413,37 @@ interface WhatWouldYouDoGameProps {
 export function WhatWouldYouDoGame({ onExitToHub }: WhatWouldYouDoGameProps) {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState);
   const { phase } = state;
+  const submittedRef = useRef(false);
+
+  useEffect(() => {
+    beginAnalyticsSession();
+  }, []);
+
+  useEffect(() => {
+    if (phase.name !== "complete" || submittedRef.current) return;
+    submittedRef.current = true;
+    void submitGameRun(ANALYTICS_ID, {
+      answers: state.firstChoices,
+      skippedQuestionIds: state.skipped,
+      retriedQuestionIds: state.retried,
+    });
+  }, [phase.name, state.firstChoices, state.skipped, state.retried]);
+
+  const start = () => {
+    submittedRef.current = false;
+    void recordGameStart(ANALYTICS_ID);
+    dispatch({ type: "start" });
+  };
+
+  const exitToHub = () => {
+    if (phase.name === "scene" || phase.name === "outcome") void recordGameExit(ANALYTICS_ID, scenarioAt(state, phase.index).id);
+    onExitToHub?.();
+  };
 
   const renderPhase = () => {
     switch (phase.name) {
       case "welcome":
-        return <Welcome onStart={() => dispatch({ type: "start" })} />;
+        return <Welcome onStart={start} />;
       case "scene":
         return (
           <SceneScreen
@@ -393,7 +466,7 @@ export function WhatWouldYouDoGame({ onExitToHub }: WhatWouldYouDoGameProps) {
           />
         );
       case "complete":
-        return <Complete state={state} onPlayAgain={() => dispatch({ type: "start" })} onExit={onExitToHub} />;
+        return <Complete state={state} onPlayAgain={start} onExit={onExitToHub} />;
     }
   };
 
@@ -412,7 +485,7 @@ export function WhatWouldYouDoGame({ onExitToHub }: WhatWouldYouDoGameProps) {
           </div>
         </div>
         {onExitToHub && (
-          <button type="button" onClick={onExitToHub} className={`${secondaryButton} whitespace-nowrap`}>
+          <button type="button" onClick={exitToHub} className={`${secondaryButton} whitespace-nowrap`}>
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Games Hub
           </button>
