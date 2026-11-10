@@ -109,32 +109,71 @@ function QuestionInsight({ options, gameId, questionId }: { options: StatsOption
   );
 }
 
-function StackedBar({ options, gameId, questionId }: { options: StatsOption[]; gameId: string; questionId: string }) {
+const OPTION_PALETTE = ["#B9A5F5", "#F7B8D0", "#8AD4F0", "#FFD95A"];
+
+function optionColor(option: StatsOption, index: number): string {
+  return FLAG_COLORS[option.option_id] ?? (option.is_best ? "#4DEBE3" : OPTION_PALETTE[index % OPTION_PALETTE.length]);
+}
+
+function Donut({ options }: { options: StatsOption[] }) {
+  const total = options.reduce((n, o) => n + o.count, 0);
+  const R = 34;
+  const C = 2 * Math.PI * R;
+  let acc = 0;
+  return (
+    <svg viewBox="0 0 84 84" className="h-28 w-28 shrink-0" role="img" aria-label="Share of answers">
+      <circle cx="42" cy="42" r={R} fill="none" stroke="#F4ECD9" strokeWidth="14" />
+      {options.map((o, i) => {
+        const offset = C / 4 - acc * C;
+        const frac = total === 0 ? 0 : o.count / total;
+        acc += frac;
+        if (frac === 0) return null;
+        return (
+          <circle
+            key={o.option_id}
+            cx="42"
+            cy="42"
+            r={R}
+            fill="none"
+            stroke={optionColor(o, i)}
+            strokeWidth="14"
+            strokeDasharray={`${frac * C} ${C}`}
+            strokeDashoffset={offset}
+          />
+        );
+      })}
+      <text x="42" y="40" textAnchor="middle" fontSize="16" fontWeight="800" fill="#2B2350">
+        {total}
+      </text>
+      <text x="42" y="53" textAnchor="middle" fontSize="8" fontWeight="700" fill="#6B6486">
+        answers
+      </text>
+    </svg>
+  );
+}
+
+function OptionBreakdown({ options, gameId, questionId }: { options: StatsOption[]; gameId: string; questionId: string }) {
   const total = options.reduce((n, o) => n + o.count, 0);
   if (total === 0) return <p className="text-sm font-semibold text-ink/60">No answers recorded yet.</p>;
   return (
-    <div>
-      <div className="flex h-7 overflow-hidden rounded-full border-[3px] border-ink bg-white">
-        {options.map((o) => {
-          const pct = (o.count / total) * 100;
-          if (pct === 0) return null;
-          const color = FLAG_COLORS[o.option_id] ?? (o.is_best ? "#4DEBE3" : o.option_id.endsWith("-b") ? "#B9A5F5" : "#F7B8D0");
-          return <span key={o.option_id} style={{ width: `${pct}%`, background: color }} title={`${o.option_id}: ${o.count}`} />;
+    <div className="flex flex-wrap items-start gap-5">
+      <Donut options={options} />
+      <ul className="min-w-52 flex-1 space-y-1.5">
+        {options.map((o, i) => {
+          const pct = Math.round((o.count / total) * 100);
+          return (
+            <li key={o.option_id} className="flex items-start gap-2 text-sm">
+              <span aria-hidden="true" className="mt-1 h-3.5 w-3.5 shrink-0 rounded border-2 border-ink" style={{ background: optionColor(o, i) }} />
+              <span className="flex-1 font-semibold leading-snug">
+                {gameLabels[gameId]?.option(questionId, o.option_id) ?? o.option_id}
+                {o.is_best && <span className="ml-1 text-xs font-extrabold text-ink/60">(recommended)</span>}
+              </span>
+              <span className="shrink-0 font-extrabold tabular-nums">
+                {o.count} · {pct}%
+              </span>
+            </li>
+          );
         })}
-      </div>
-      <ul className="mt-2 space-y-1">
-        {options.map((o) => (
-          <li key={o.option_id} className="flex items-start gap-2 text-sm">
-            <span className={`mt-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded border-2 border-ink px-1 text-[10px] font-black ${o.is_best ? "bg-turquoise" : "bg-cream"}`}>
-              {o.option_id.includes("-") ? o.option_id.slice(-1).toUpperCase() : o.option_id.slice(0, 1).toUpperCase()}
-            </span>
-            <span className="flex-1 font-semibold leading-snug">
-              {gameLabels[gameId]?.option(questionId, o.option_id) ?? o.option_id}
-              {o.is_best && <span className="ml-1 text-xs font-extrabold text-ink/60">(safest)</span>}
-            </span>
-            <span className="font-extrabold tabular-nums">{o.count}</span>
-          </li>
-        ))}
       </ul>
     </div>
   );
@@ -142,6 +181,8 @@ function StackedBar({ options, gameId, questionId }: { options: StatsOption[]; g
 
 function GameCard({ game }: { game: StatsGame }) {
   const labels = gameLabels[game.game_id];
+  const gameIndex = GAME_ORDER.indexOf(game.game_id);
+  const headerColor = ["#D7F8F4", "#E7DFFB", "#FFE3DD", "#FFF0BA"][gameIndex] ?? "#F4ECD9";
   const rate = game.starts > 0 ? Math.round((game.completions / game.starts) * 100) : 0;
   const [open, setOpen] = useState<string | null>(null);
   const headline: [string, number][] = [
@@ -152,17 +193,26 @@ function GameCard({ game }: { game: StatsGame }) {
     ["skips", game.skipped],
   ];
   return (
-    <section className="rounded-3xl border-[3px] border-ink bg-white shadow-chunky">
-      <header className="border-b-[3px] border-ink px-5 py-4 sm:px-6">
-        <h2 className="text-xl font-extrabold">{labels?.title ?? game.game_id}</h2>
-        <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm font-bold text-ink/75">
-          {headline.map(([label, value]) => (
-            <span key={label}>
-              {value}
-              {label === "finish rate" ? "%" : ""} <span className="font-semibold text-ink/55">{label}</span>
+    <section className="overflow-hidden rounded-3xl border-[3px] border-ink bg-white shadow-chunky">
+      <header className="border-b-[3px] border-ink px-5 py-4 sm:px-6" style={{ backgroundColor: headerColor }}>
+        <div className="flex flex-wrap items-center gap-3">
+          {gameIndex >= 0 && (
+            <span className="rounded-full border-2 border-ink bg-white px-3 py-1 text-sm font-extrabold">
+              Game {gameIndex + 1}
             </span>
-          ))}
+          )}
+          <h2 className="text-xl font-extrabold">{labels?.title ?? game.game_id}</h2>
         </div>
+        <dl className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+          {headline.map(([label, value]) => (
+            <div key={label} className="rounded-2xl border-2 border-ink/15 bg-white/80 px-3 py-2">
+              <dt className="text-xs font-bold capitalize text-ink/70">{label}</dt>
+              <dd className="mt-1 text-2xl font-extrabold tabular-nums">
+                {value}{label === "finish rate" ? "%" : ""}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </header>
       {!game.question_detail_available && (
         <p className="px-5 py-4 text-sm font-semibold text-ink/70 sm:px-6">
@@ -174,6 +224,10 @@ function GameCard({ game }: { game: StatsGame }) {
         {game.questions.map((q) => {
           const title = labels?.question[q.question_id] ?? q.question_id;
           const isOpen = open === q.question_id;
+          const totalAnswers = q.options.reduce((n, o) => n + o.count, 0);
+          const topWrong = q.options.filter((o) => !o.is_best).sort((a, b) => b.count - a.count)[0];
+          const wrongPct = topWrong && totalAnswers ? Math.round((topWrong.count / totalAnswers) * 100) : 0;
+          const wrongLabel = topWrong ? (labels?.option(q.question_id, topWrong.option_id) ?? topWrong.option_id) : "";
           return (
             <li key={q.question_id}>
               <button
@@ -183,17 +237,31 @@ function GameCard({ game }: { game: StatsGame }) {
                 className="flex w-full items-center justify-between gap-3 py-3 text-left"
               >
                 <span className="font-bold leading-snug">{title}</span>
-                <span className="flex shrink-0 items-center gap-3 text-xs font-bold text-ink/60">
-                  {q.skips > 0 && <span>{q.skips} skip{q.skips > 1 ? "s" : ""}</span>}
-                  {q.retries > 0 && <span>{q.retries} retr{q.retries > 1 ? "ies" : "y"}</span>}
-                  {q.exits > 0 && <span>{q.exits} exit{q.exits > 1 ? "s" : ""}</span>}
-                  <span aria-hidden="true" className={`inline-block transition-transform ${isOpen ? "rotate-180" : ""}`}>▾</span>
+                <span className="flex shrink-0 items-center gap-3">
+                  {totalAnswers === 0 ? (
+                    <span className="text-xs font-bold text-ink/45">no answers yet</span>
+                  ) : wrongPct === 0 ? (
+                    <span className="rounded-full border-2 border-ink bg-turquoise px-2 py-0.5 text-[11px] font-extrabold">all recommended</span>
+                  ) : (
+                    <span
+                      title={`Most-picked other move: “${wrongLabel}”`}
+                      className={`rounded-full border-2 border-ink px-2 py-0.5 text-[11px] font-extrabold ${wrongPct >= 40 ? "bg-soft-pink" : "bg-peach"}`}
+                    >
+                      {wrongPct}% “{wrongLabel.length > 22 ? `${wrongLabel.slice(0, 21)}…` : wrongLabel}”
+                    </span>
+                  )}
+                  <span aria-hidden="true" className={`inline-block text-xs font-bold text-ink/60 transition-transform ${isOpen ? "rotate-180" : ""}`}>▾</span>
                 </span>
               </button>
               {isOpen && (
-                <div className="space-y-2 pb-4">
-                  <StackedBar options={q.options} gameId={game.game_id} questionId={q.question_id} />
+                <div className="space-y-3 pb-5">
+                  <OptionBreakdown options={q.options} gameId={game.game_id} questionId={q.question_id} />
                   <QuestionInsight options={q.options} gameId={game.game_id} questionId={q.question_id} />
+                  <p className="flex flex-wrap gap-3 text-xs font-bold text-ink/55">
+                    {q.skips > 0 && <span>{q.skips} skipped</span>}
+                    {q.retries > 0 && <span>{q.retries} retried another move first</span>}
+                    {q.exits > 0 && <span>{q.exits} left the game here</span>}
+                  </p>
                 </div>
               )}
             </li>
