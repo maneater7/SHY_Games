@@ -6,38 +6,38 @@
 .lobby-orbit-b { right: -480px; bottom: -250px; border-color: #4debe340; }
 .lobby-bg-token { position: absolute; right: 4%; top: 60%; font-size: 180px; font-weight: 950; color: #b9a5f52b; transform: rotate(15deg); }
 .lobby-header, .lobby-main, .lobby-footer { width: min(1120px, calc(100% - 3rem)); margin-inline: auto; }
-.lobby-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.5rem 0; border-bottom: 2px solid #2b235025; }
+.lobby-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.85rem 0; border-bottom: 2px solid #2b235025; }
 .lobby-wordmark { display: flex; align-items: center; gap: 0.8rem; }
-.lobby-logo { width: 55px; height: 55px; object-fit: contain; }
+.lobby-logo { width: 46px; height: 46px; object-fit: contain; }
 .lobby-wordmark > span { display: grid; min-width: 78px; height: 55px; place-items: center; border: 3px solid #2b2350; border-radius: 17px; background: #b9a5f5; box-shadow: 3px 3px 0 #2b2350; font-size: 1.7rem; font-weight: 950; letter-spacing: -0.07em; transform: rotate(-4deg); }
 .lobby-wordmark > div { font-size: 0.78rem; font-weight: 950; letter-spacing: 0.13em; }
 .lobby-wordmark small { display: block; margin-top: 0.3rem; font-size: 0.65rem; font-weight: 600; letter-spacing: 0; }
 .lobby-live { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 0.8rem; border: 2px solid #2b2350; border-radius: 999px; background: #fff8ed; font-size: 0.73rem; font-weight: 850; white-space: nowrap; }
 .lobby-live > span { width: 8px; height: 8px; border: 1.5px solid #205539; border-radius: 50%; background: #9be7a0; }
-.lobby-hero { display: grid; grid-template-columns: 1.3fr 0.8fr; align-items: center; gap: 2rem; padding: 2.5rem 0 2rem; }
+.lobby-hero { display: grid; grid-template-columns: 1.3fr 0.8fr; align-items: center; gap: 1.5rem; padding: 1.4rem 0 1.1rem; }
 .lobby-eyebrow { margin: 0; font-size: 0.66rem; font-weight: 950; letter-spacing: 0.16em; }
-.lobby-hero h1 { margin: 0.9rem 0 1rem; font-size: clamp(3rem, 6.4vw, 5.4rem); font-weight: 950; letter-spacing: -0.075em; line-height: 0.98; }
+.lobby-hero h1 { margin: 0.55rem 0 0.7rem; font-size: clamp(2.3rem, 4.6vw, 3.8rem); font-weight: 950; letter-spacing: -0.075em; line-height: 0.98; }
 .lobby-hero h1:focus { outline: none; }
 .lobby-hero h1 > span { display: inline-block; position: relative; z-index: 0; color: #6c4db2; }
 .lobby-hero h1 > span::after { content: ""; position: absolute; z-index: -1; left: -1%; right: -2%; bottom: 0; height: 24%; border-radius: 4px; background: #ffd45c; transform: rotate(-2deg); }
-.lobby-hero-description { max-width: 440px; margin-bottom: 1.3rem; color: #534970; font-size: 0.96rem; line-height: 1.65; }
-.lobby-choose { display: inline-flex; min-height: 50px; align-items: center; gap: 1.5rem; padding: 0.7rem 1.2rem; border: 3px solid #2b2350; border-radius: 14px; background: #4debe3; box-shadow: 4px 4px 0 #2b2350; color: #2b2350; font-size: 0.9rem; font-weight: 900; text-decoration: none; transition: transform 150ms ease, box-shadow 150ms ease; }
+.lobby-hero-description { max-width: 440px; margin-bottom: 0.9rem; color: #534970; font-size: 0.9rem; line-height: 1.6; }
+.lobby-choose { display: inline-flex; min-height: 44px; align-items: center; gap: 1.2rem; padding: 0.55rem 1rem; border: 3px solid #2b2350; border-radius: 14px; background: #4debe3; box-shadow: 4px 4px 0 #2b2350; color: #2b2350; font-size: 0.85rem; font-weight: 900; text-decoration: none; transition: transform 150ms ease, box-shadow 150ms ease; }
 .lobby-choose:hover { transform: translateY(-2px); box-shadow: 4px 6px 0 #2b2350; }
 .lobby-hero-footnote { margin: 1rem 0 0; color: #65567d; font-size: 0.7rem; font-weight: 650; }
-.lobby-guide { position: relative; display: flex; height: 330px; max-width: 350px; align-items: center; justify-content: center; margin-left: auto; width: 100%; }
-.lobby-speech { position: absolute; z-index: 2; top: 0; right: 0; padding: 0.7rem 1rem; border: 2px solid #2b2350; border-radius: 16px 16px 16px 2px; background: #fff8ed; box-shadow: 3px 3px 0 #2b2350; font-size: 0.8rem; font-weight: 850; line-height: 1.4; transform: rotate(5deg); }
-.lobby-capy { position: relative; z-index: 1; width: 250px; margin-top: 1.5rem; --capy-sign: #ffd45c; transform: rotate(-4deg); }
-.lobby-capy .capybara-sign { font-size: 1.3rem; }
-.lobby-guide-platform { position: absolute; bottom: 31px; width: 300px; height: 70px; border: 3px solid #2b2350; border-radius: 50%; background: #b9a5f5; box-shadow: 0 9px 0 #8f78e0, 0 12px 0 #2b2350; }
-.lobby-guide-spark { position: absolute; font-size: 2.4rem; font-weight: 800; color: #6c4db2; }
+.lobby-guide { position: relative; display: flex; height: 235px; max-width: 300px; align-items: center; justify-content: center; margin-left: auto; width: 100%; }
+.lobby-speech { position: absolute; z-index: 2; top: 0; right: 0; padding: 0.5rem 0.8rem; border: 2px solid #2b2350; border-radius: 14px 14px 14px 2px; background: #fff8ed; box-shadow: 3px 3px 0 #2b2350; font-size: 0.7rem; font-weight: 850; line-height: 1.35; transform: rotate(5deg); }
+.lobby-capy { position: relative; z-index: 1; width: 180px; margin-top: 0.8rem; --capy-sign: #ffd45c; transform: rotate(-4deg); }
+.lobby-capy .capybara-sign { font-size: 1rem; }
+.lobby-guide-platform { position: absolute; bottom: 24px; width: 235px; height: 55px; border: 3px solid #2b2350; border-radius: 50%; background: #b9a5f5; box-shadow: 0 7px 0 #8f78e0, 0 10px 0 #2b2350; }
+.lobby-guide-spark { position: absolute; font-size: 1.8rem; font-weight: 800; color: #6c4db2; }
 .lobby-spark-left { left: 0; top: 28%; transform: rotate(-15deg); }
 .lobby-spark-right { right: 0; top: 55%; }
-.lobby-guide-tag { position: absolute; z-index: 2; bottom: 0; padding: 0.45rem 0.8rem; border: 2px solid #2b2350; border-radius: 8px; background: #fff8ed; font-size: 0.58rem; font-weight: 950; letter-spacing: 0.12em; transform: rotate(2deg); }
-.lobby-heads-up { display: flex; align-items: flex-start; gap: 0.8rem; max-width: 720px; margin: 0 auto 1.8rem; padding: 1rem 1.2rem; border: 3px solid #2b2350; border-radius: 18px; background: #fff8ed; box-shadow: 4px 4px 0 #2b2350; font-size: 0.875rem; font-weight: 600; line-height: 1.55; }
+.lobby-guide-tag { position: absolute; z-index: 2; bottom: 0; padding: 0.4rem 0.7rem; border: 2px solid #2b2350; border-radius: 8px; background: #fff8ed; font-size: 0.54rem; font-weight: 950; letter-spacing: 0.12em; transform: rotate(2deg); }
+.lobby-heads-up { display: flex; align-items: flex-start; gap: 0.7rem; max-width: 720px; margin: 0 auto 1.1rem; padding: 0.75rem 1rem; border: 3px solid #2b2350; border-radius: 16px; background: #fff8ed; box-shadow: 4px 4px 0 #2b2350; font-size: 0.78rem; font-weight: 600; line-height: 1.5; }
 .lobby-heads-up svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 0.1rem; }
 .lobby-heads-up p { margin: 0; }
 .lobby-library { scroll-margin-top: 1rem; }
-.lobby-library-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin: 0.5rem 0 1.3rem; }
+.lobby-library-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin: 0.25rem 0 0.9rem; }
 .lobby-library-top h2 { margin: 0.35rem 0 0; font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 900; letter-spacing: -0.045em; }
 .lobby-availability { padding: 0.5rem 0.7rem; border: 2px solid #2b2350; border-radius: 10px; background: #fff8ed; font-size: 0.65rem; font-weight: 900; letter-spacing: 0.05em; }
 .lobby-availability > span { padding: 0 0.3rem; color: #8e7ea8; }
@@ -51,7 +51,7 @@
 .lobby-is-playable { transition: transform 160ms ease, box-shadow 160ms ease; }
 .lobby-is-playable:hover { transform: translate(-2px, -4px); box-shadow: 7px 9px 0 #2b2350; }
 .lobby-is-playable:has(button:focus-visible) { outline: 3px solid #6c4db2; outline-offset: 5px; }
-.lobby-card-scene { position: relative; display: flex; min-height: 240px; overflow: hidden; align-items: center; justify-content: center; border-right: 3px solid #2b2350; background: var(--scene); }
+.lobby-card-scene { position: relative; display: flex; min-height: 190px; overflow: hidden; align-items: center; justify-content: center; border-right: 3px solid #2b2350; background: var(--scene); }
 .lobby-card-scene::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(#2b23501f 1px, transparent 1px); background-size: 14px 14px; }
 .lobby-scene-ring { position: absolute; width: 150px; height: 150px; border: 2px solid #fff8edb3; border-radius: 50%; }
 .lobby-scene-spark { position: absolute; top: 10px; right: 15px; font-size: 1.7rem; font-weight: 800; }
@@ -82,13 +82,13 @@
 @media (max-width: 800px) {
   .lobby-games-grid { grid-template-columns: 1fr; }
   .lobby-hero { grid-template-columns: 1fr 0.8fr; gap: 1rem; }
-  .lobby-hero h1 { font-size: clamp(2.6rem, 7vw, 4rem); }
-  .lobby-guide { height: 310px; }
-  .lobby-guide-platform { width: 235px; }
-  .lobby-capy { width: 220px; }
-  .lobby-speech { font-size: 0.7rem; }
-  .lobby-game-link { grid-template-columns: 135px minmax(0, 1fr); }
-  .lobby-card-scene { min-height: 210px; }
+  .lobby-hero h1 { font-size: clamp(2.1rem, 6vw, 3.2rem); }
+  .lobby-guide { height: 210px; }
+  .lobby-guide-platform { width: 200px; height: 48px; }
+  .lobby-capy { width: 160px; }
+  .lobby-speech { font-size: 0.62rem; }
+  .lobby-game-link { grid-template-columns: 120px minmax(0, 1fr); }
+  .lobby-card-scene { min-height: 170px; }
 }
 @media (max-width: 540px) {
   .lobby-header, .lobby-main, .lobby-footer { width: calc(100% - 2rem); }
@@ -98,13 +98,13 @@
   .lobby-wordmark > div { font-size: 0.59rem; letter-spacing: 0.08em; }
   .lobby-wordmark small { max-width: 105px; font-size: 0.53rem; }
   .lobby-live { padding: 0.4rem 0.55rem; font-size: 0.6rem; }
-  .lobby-hero { grid-template-columns: 1fr; padding: 2rem 0 1.5rem; }
-  .lobby-hero h1 { font-size: clamp(3.2rem, 12vw, 4.5rem); }
-  .lobby-hero-description { font-size: 0.9rem; }
-  .lobby-guide { height: 255px; max-width: 290px; margin: 0.5rem auto 0; }
-  .lobby-capy { width: 195px; }
-  .lobby-capy .capybara-sign { font-size: 1rem; }
-  .lobby-guide-platform { bottom: 25px; width: 230px; height: 55px; }
+  .lobby-hero { grid-template-columns: 1fr; padding: 1.2rem 0 1rem; }
+  .lobby-hero h1 { font-size: clamp(2.4rem, 9vw, 3.2rem); }
+  .lobby-hero-description { font-size: 0.85rem; }
+  .lobby-guide { height: 175px; max-width: 260px; margin: 0.3rem auto 0; }
+  .lobby-capy { width: 130px; }
+  .lobby-capy .capybara-sign { font-size: 0.75rem; }
+  .lobby-guide-platform { bottom: 18px; width: 180px; height: 42px; }
   .lobby-guide-tag { font-size: 0.5rem; }
   .lobby-speech { right: -3px; padding: 0.5rem 0.7rem; }
   .lobby-game-link { grid-template-columns: 95px minmax(0, 1fr); }
