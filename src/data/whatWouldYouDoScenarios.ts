@@ -170,7 +170,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "s5",
-    topic: "Health misinformation",
+    topic: "Sexual health misinformation",
     scene: "social-feed",
     speaker: { name: "@herbdoc", relation: "a post on your feed", line: "This home remedy cleared my STI in 3 days. Don’t waste money at the clinic!" },
     startMood: "pleased",
@@ -179,7 +179,7 @@ export const scenarios: Scenario[] = [
     options: [
       {
         id: "s5-a",
-        text: "Check reliable medical sources and ask a healthcare professional, because online stories can’t tell you whether something works or is safe.",
+        text: "Check reliable medical sources and ask a healthcare professional. Online stories can’t tell you if something works or is safe.",
         isBest: true,
         outcome: { mood: "surprised", text: "You go to people who can actually check what’s going on and treat it properly." },
       },
@@ -203,7 +203,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "s6",
-    topic: "Witnessing harassment",
+    topic: "Witnessing sexual harassment",
     scene: "mall",
     speaker: { name: "A stranger", relation: "talking to Aina", line: "Why are you ignoring me? Just give me your number." },
     startMood: "uneasy",
@@ -236,7 +236,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "s7",
-    topic: "Getting health advice",
+    topic: "Uncertainty about healthcare",
     scene: "clinic-reception",
     speaker: { name: "Nurse Farah", relation: "at the clinic desk", line: "Hi! What can we help you with today?" },
     startMood: "neutral",
@@ -259,7 +259,7 @@ export const scenarios: Scenario[] = [
       },
       {
         id: "s7-c",
-        text: "Book an appointment with a qualified healthcare professional and explain your concerns. You don’t have to be sure it’s serious to ask.",
+        text: "Book an appointment with a qualified healthcare professional. You don’t have to be sure it’s serious to ask.",
         isBest: true,
         outcome: { mood: "pleased", text: "You get a proper check, and you can ask about confidentiality when you book." },
       },
@@ -270,7 +270,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "s8",
-    topic: "Unsafe secrets",
+    topic: "Pressure to keep a secret",
     scene: "dusk-bench",
     speaker: { name: "Maya", relation: "your friend", line: "Please don’t tell anyone. Promise me." },
     startMood: "concerned",
@@ -305,7 +305,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "s9",
-    topic: "Respectful healthcare",
+    topic: "Experiencing discrimination",
     scene: "clinic-counter",
     speaker: { name: "Clinic staff", relation: "behind the counter", line: "Someone your age shouldn’t be asking about this." },
     startMood: "pressuring",

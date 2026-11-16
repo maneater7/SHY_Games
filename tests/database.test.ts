@@ -147,21 +147,21 @@ describe("public anon key", () => {
     await assert.rejects(anon("select public.admin_game_stats()"), /permission denied/);
   });
 
-  test("only the three write functions are exposed", async () => {
+  test("only approved write and admin functions are exposed", async () => {
     const callable = (
       await db.query<{ name: string }>(
         `select p.proname as name from pg_proc p join pg_namespace n on n.oid = p.pronamespace
          where n.nspname = 'public' and has_function_privilege('anon', p.oid, 'execute') order by 1`,
       )
     ).rows.map((r) => r.name);
-    assert.deepEqual(callable, ["record_game_exit", "record_game_start", "submit_game_run"]);
+    assert.deepEqual(callable, ["record_booth_start", "record_game_exit", "record_game_start", "register_booth_player", "submit_booth_run", "submit_game_run"]);
     const callableByAuthed = (
       await db.query<{ name: string }>(
         `select p.proname as name from pg_proc p join pg_namespace n on n.oid = p.pronamespace
          where n.nspname = 'public' and has_function_privilege('authenticated', p.oid, 'execute') order by 1`,
       )
     ).rows.map((r) => r.name);
-    assert.deepEqual(callableByAuthed, ["admin_check", "admin_game_stats", "record_game_exit", "record_game_start", "submit_game_run"]);
+    assert.deepEqual(callableByAuthed, ["admin_booth_results", "admin_check", "admin_game_stats", "record_game_exit", "record_game_start", "submit_game_run"]);
   });
 });
 
@@ -308,5 +308,64 @@ describe("admin report", () => {
 
     const myth = s.find((g) => g.game_id === "myth-or-fact")!;
     assert.equal(myth.questions.find((q) => q.question_id === "q5")!.exits, 1);
+  });
+});
+
+describe("individual booth results", () => {
+  const token = "11111111-1111-4111-8111-111111111111";
+  const tokenB = "22222222-2222-4222-8222-222222222222";
+  const run = "33333333-3333-4333-8333-333333333333";
+  const register = (t: string, name = "Fictional Student", email = "student@example.test") =>
+    anon("select public.register_booth_player($1::uuid, $2, $3)", [t, name, email]);
+  const finish = (t: string, id: string, answers = fullRun("myth-or-fact")) =>
+    anon("select public.submit_booth_run($1::uuid,$2::uuid,$3,$4::jsonb,$5,$6)", [t, id, ...answers]);
+
+  test("validates registration and never exposes identities to public clients", async () => {
+    await assert.rejects(register(token, " "), /valid name/);
+    await assert.rejects(register(token, "Student", "not-an-email"), /valid name/);
+    await register(token);
+    await register(token);
+    await register(tokenB, "Another Student", "another@example.test");
+    await assert.rejects(register(token, "Someone else"), /could not be saved/);
+    await assert.rejects(anon("select * from shy_private.booth_players"), /permission denied/);
+    await assert.rejects(anon("select public.admin_booth_results()"), /permission denied/);
+    await assert.rejects(as("authenticated", { sub: OTHER_ID }, "select public.admin_booth_results()"), /Not authorized/);
+  });
+
+  test("saves completed games once, calculates scores server-side, and keeps players separate", async () => {
+    await assert.rejects(finish(OTHER_ID, run), /Register before/);
+    await assert.rejects(finish(token, run, ["myth-or-fact", "[]", [], []]), /every question/);
+    const args = fullRun("myth-or-fact", "best", ["q12"]);
+    const values = JSON.parse(args[1] as string);
+    values[0].option_id = "myth";
+    args[1] = JSON.stringify(values);
+    await finish(token, run, args);
+    await finish(token, run, args);
+    await assert.rejects(finish(tokenB, run, args), /Invalid attempt/);
+    const [{ r }] = await as<{ r: { name: string; score: number; question_count: number; skipped: number; answers: { question_id: string; skipped: boolean }[] }[] }>("authenticated", { sub: ADMIN_ID }, "select public.admin_booth_results() as r");
+    assert.equal(r.length, 1);
+    assert.equal(r[0].name, "Fictional Student");
+    assert.equal(r[0].score, 10);
+    assert.equal(r[0].question_count, 12);
+    assert.equal(r[0].skipped, 1);
+    assert.equal(r[0].answers.find(q => q.question_id === "q12")!.skipped, true);
+    await finish(tokenB, "44444444-4444-4444-8444-444444444444");
+    const [{ n }] = await db.query<{ n: number }>("select count(*)::int n from shy_private.booth_runs").then(r => r.rows);
+    assert.equal(n, 2);
+    await assert.rejects(anon("select * from shy_private.booth_runs"), /permission denied/);
+  });
+
+  test("keeps separate completed games and replays without storing unfinished attempts", async () => {
+    await anon("select public.record_booth_start($1::uuid, 'what-would-you-do')", [token]);
+    const before = (await db.query<{ n: number }>("select count(*)::int n from shy_private.booth_runs")).rows[0].n;
+    await anon("select public.record_booth_start($1::uuid, 'pov-friend-texted-you-this')", [token]);
+    await finish(token, "55555555-5555-4555-8555-555555555555", fullRun("pov-friend-texted-you-this"));
+    await finish(token, "66666666-6666-4666-8666-666666666666", fullRun("pov-friend-texted-you-this"));
+    const [{ n }] = (await db.query<{ n: number }>("select count(*)::int n from shy_private.booth_runs")).rows;
+    assert.equal(n, before + 2);
+    const [{ r }] = await as<{ r: { game_id: string }[] }>("authenticated", { sub: ADMIN_ID }, "select public.admin_booth_results(0,500) as r");
+    assert.equal(r.filter(x => x.game_id === "pov-friend-texted-you-this").length, 2);
+    assert.equal(r.filter(x => x.game_id === "what-would-you-do").length, 0);
+    await assert.rejects(as("authenticated", { sub: ADMIN_ID }, "select * from shy_private.booth_runs"), /permission denied/);
   });
 });

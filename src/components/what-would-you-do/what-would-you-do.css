@@ -4,7 +4,14 @@
   100% { transform: scale(1); }
 }
 
+.wwyd-map-stop { transition: fill 240ms ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wwyd-map-stop { transition: none; }
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  .wwyd-map-pin { transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1); }
   .wwyd-face-pop {
     transform-box: fill-box;
     transform-origin: center;

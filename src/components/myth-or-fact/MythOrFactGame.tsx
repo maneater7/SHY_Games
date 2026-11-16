@@ -251,11 +251,9 @@ export function FeedbackView({
 
 function Completion({
   state,
-  onPlayAgain,
   onHome,
 }: {
   state: ReturnType<typeof createInitialState>;
-  onPlayAgain: () => void;
   onHome: () => void;
 }) {
   const result = scoreRun(state);
@@ -330,11 +328,8 @@ function Completion({
       )}
 
       <div className="completion-actions">
-        <button className="button button-primary" onClick={onPlayAgain} type="button">
-          Play again <ArrowIcon />
-        </button>
-        <button className="button button-secondary" onClick={onHome} type="button">
-          Back to start
+        <button className="button button-primary" onClick={onHome} type="button">
+          Go to home page <NavigationIcon />
         </button>
       </div>
     </section>
@@ -371,12 +366,6 @@ export default function MythOrFactGame({ onComplete, onExitToHub }: MythOrFactGa
     savedCompletion.current = false;
     void recordGameStart(ANALYTICS_ID);
     dispatch({ type: "start" });
-  };
-
-  const playAgain = () => {
-    savedCompletion.current = false;
-    void recordGameStart(ANALYTICS_ID);
-    dispatch({ type: "playAgain" });
   };
 
   const exitToHub = () => {
@@ -430,8 +419,7 @@ export default function MythOrFactGame({ onComplete, onExitToHub }: MythOrFactGa
         {state.phase === "complete" && (
           <Completion
             state={state}
-            onHome={() => dispatch({ type: "exit" })}
-            onPlayAgain={playAgain}
+            onHome={exitToHub}
           />
         )}
       </main>

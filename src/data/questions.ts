@@ -24,25 +24,25 @@ export const questions: Question[] = [
     "topic": "Reaching out",
     "startExpression": "worried",
     "friendMessage": "“Something happened yesterday, and I don’t know who I can talk to about it.”",
-    "summary": "A supportive response acknowledges your friend’s feelings without judging, blaming, or pressuring them to share more than they are comfortable with.",
+    "summary": "A supportive reply acknowledges feelings without judging, blaming or pressuring them to share more than they want to.",
     "options": [
       {
         "id": "q1-a",
-        "text": "That sounds serious. Tell me exactly what happened, and we’ll work out how to fix it together.",
+        "text": "That sounds serious. Tell me exactly what happened so I can help.",
         "isHelpful": false,
-        "explanation": "This may make your friend feel pressured to share more than they are ready to."
+        "explanation": "This pressures them for details they may not be ready to share."
       },
       {
         "id": "q1-b",
-        "text": "Try not to dwell on it for now. Things usually feel a lot better after a good night’s sleep.",
+        "text": "Try not to dwell on it. Things usually feel better after a good night’s sleep.",
         "isHelpful": false,
-        "explanation": "This plays down their feelings and may leave them feeling unheard."
+        "explanation": "This minimises the problem, so they may stop reaching out."
       },
       {
         "id": "q1-c",
         "text": "I’m sorry you’re dealing with something hard. I’m here to listen whenever you feel ready.",
         "isHelpful": true,
-        "explanation": "This gives your friend space and lets them decide when they are ready to talk."
+        "explanation": "This gives them space and lets them decide when to talk."
       }
     ],
     "helpfulReaction": {
@@ -55,25 +55,25 @@ export const questions: Question[] = [
     "topic": "Nervous about a clinic visit",
     "startExpression": "worried",
     "friendMessage": "“I’m really nervous about visiting a clinic to ask questions about my sexual health.”",
-    "summary": "Asking questions about sexual health is valid, even with no symptoms or immediate concerns. A healthcare professional can provide reliable information, and it is reasonable to ask about confidentiality and privacy.",
+    "summary": "Asking about your health is valid, and professionals are there to help without judging. Asking about confidentiality is a good first step.",
     "options": [
       {
         "id": "q2-a",
-        "text": "Lots of people feel that way. You deserve accurate information, and you can ask how they protect your privacy before you go.",
+        "text": "Lots of people feel nervous about that. You deserve accurate information, and you can ask the clinic how they protect your privacy.",
         "isHelpful": true,
-        "explanation": "This reassures your friend and gives them a practical way to feel more comfortable."
+        "explanation": "This validates the feeling and suggests a practical first step."
       },
       {
         "id": "q2-b",
-        "text": "I get it, it’s awkward. Maybe wait until you’re sure there’s actually a problem, so you don’t waste their time.",
+        "text": "I get it, it’s awkward. Maybe wait until you’re sure there’s a problem, so you don’t waste their time.",
         "isHelpful": false,
-        "explanation": "This may discourage someone from seeking information or care they are entitled to."
+        "explanation": "This delays care and suggests the question isn’t worth asking."
       },
       {
         "id": "q2-c",
-        "text": "Try asking in an online forum first. You’ll get plenty of answers without anyone knowing it’s you, and no awkward appointment.",
+        "text": "Try asking in an online forum first. You’ll get plenty of answers without anyone knowing it’s you.",
         "isHelpful": false,
-        "explanation": "This points to online advice that may be inaccurate."
+        "explanation": "This relies on unverified sources instead of reliable information."
       }
     ],
     "helpfulReaction": {
@@ -86,25 +86,25 @@ export const questions: Question[] = [
     "topic": "Boundaries in a relationship",
     "startExpression": "upset",
     "friendMessage": "“My partner keeps getting upset whenever I say no to something I’m uncomfortable with.”",
-    "summary": "Everyone has the right to set boundaries. A healthy relationship involves respecting those boundaries without pressure or guilt.",
+    "summary": "Boundaries should be respected, and nobody should feel pressured.",
     "options": [
       {
         "id": "q3-a",
-        "text": "Relationships are all about give and take. Maybe say yes now and then, just to keep things calm between you.",
+        "text": "Relationships are give and take. Maybe say yes sometimes to keep things calm.",
         "isHelpful": false,
-        "explanation": "This suggests giving up a personal boundary to avoid conflict."
+        "explanation": "This treats giving up your boundaries as compromise."
       },
       {
         "id": "q3-b",
         "text": "You’re allowed to say no. If it keeps happening, talk to someone you trust about how it makes you feel.",
         "isHelpful": true,
-        "explanation": "This backs your friend’s right to say no and encourages support if the behaviour continues."
+        "explanation": "This backs your friend’s right to say no and points to support."
       },
       {
         "id": "q3-c",
-        "text": "They’re probably just stressed. Try explaining it a different way so they don’t take it personally.",
+        "text": "They’re probably just stressed. Try explaining it differently so they don’t take it personally.",
         "isHelpful": false,
-        "explanation": "This makes your friend responsible for managing their partner’s reaction."
+        "explanation": "This makes your friend responsible for how the other person reacts."
       }
     ],
     "helpfulReaction": {
@@ -117,25 +117,25 @@ export const questions: Question[] = [
     "topic": "Private picture shared in a group chat",
     "startExpression": "upset",
     "friendMessage": "“Someone shared a private picture of another student in our group chat. Everyone’s talking about it.”",
-    "summary": "Sharing someone’s private content without permission is a serious breach of privacy. It is important not to forward or spread it further, and to involve someone who can help, such as a lecturer, student support, or the platform’s report tool.",
+    "summary": "Respect privacy, don’t forward private content, and get support. The person affected may need help.",
     "options": [
       {
         "id": "q4-a",
-        "text": "Let’s just leave the group chat and stay out of it. It’s not really our business anyway.",
+        "text": "Let’s just leave the chat and stay out of it. It’s not our business.",
         "isHelpful": false,
-        "explanation": "This avoids the situation without helping the person affected."
+        "explanation": "This leaves the affected student without help."
       },
       {
         "id": "q4-b",
-        "text": "Ask everyone to stop forwarding it. If they listen, then we don’t really need to involve anyone else in this.",
+        "text": "Ask everyone to stop forwarding it, and if they do, we don’t need to tell anyone.",
         "isHelpful": false,
-        "explanation": "Asking people to stop is a good first step, but it doesn’t bring in someone who can help further."
+        "explanation": "This asks for the right thing but doesn’t involve anyone who can help."
       },
       {
         "id": "q4-c",
-        "text": "Don’t forward it, it could hurt them badly. Let’s report it and tell a lecturer or student support.",
+        "text": "Don’t share or forward it. It could hurt them badly. Let’s report it and tell a trusted adult.",
         "isHelpful": true,
-        "explanation": "This protects the person’s privacy and encourages the right kind of action."
+        "explanation": "This protects privacy and brings in support."
       }
     ],
     "helpfulReaction": {
@@ -148,25 +148,25 @@ export const questions: Question[] = [
     "topic": "Pressure to send private pictures",
     "startExpression": "worried",
     "friendMessage": "“Someone I’m talking to keeps asking me to send private pictures. They say it’s how I prove I trust them.”",
-    "summary": "Nobody should be pressured into sharing private pictures. Trust does not require someone to give up their privacy or personal boundaries. Repeated pressure is a warning sign, and your friend deserves support.",
+    "summary": "Nobody should be pressured to share private images. You can’t control where an image goes, and the pressure itself is a warning sign.",
     "options": [
       {
         "id": "q5-a",
-        "text": "You don’t have to send anything. Trust isn’t proven with pictures, and it’s okay to stop talking to them if they push.",
+        "text": "You don’t have to send anything. Trust doesn’t mean sending private pictures, and it’s okay to stop talking to them if they keep pushing.",
         "isHelpful": true,
-        "explanation": "This reinforces consent, boundaries, and the right to say no."
+        "explanation": "This reinforces boundaries and names the pressure."
       },
       {
         "id": "q5-b",
-        "text": "If you really do trust them, it should be fine, as long as they promise they won’t show it to anyone else at all.",
+        "text": "If you do trust them, it should be fine, as long as they promise not to share it.",
         "isHelpful": false,
-        "explanation": "This relies on a promise that cannot guarantee privacy."
+        "explanation": "This relies on a promise nobody can enforce."
       },
       {
         "id": "q5-c",
-        "text": "Maybe send just one that doesn’t show your face. That way it can’t be traced back to you, so it should be totally safe.",
+        "text": "Send one that doesn’t show your face. That way it can’t be traced back to you.",
         "isHelpful": false,
-        "explanation": "This gives a false sense of safety and ignores the pressure your friend is under."
+        "explanation": "This still leaves the image open to being shared and ignores the pressure."
       }
     ],
     "helpfulReaction": {
@@ -179,25 +179,25 @@ export const questions: Question[] = [
     "topic": "Comments about appearance",
     "startExpression": "upset",
     "friendMessage": "“People in my class keep making comments about my appearance, and it’s starting to bother me.”",
-    "summary": "Repeated unwanted comments about someone’s appearance can be hurtful and may amount to bullying. A supportive friend listens, validates their feelings, and offers help without forcing them to take a particular action.",
+    "summary": "Respond with empathy, not dismissal. Repeated comments about someone’s body are bullying and may need adult support.",
     "options": [
       {
         "id": "q6-a",
-        "text": "Just laugh it off. They’ll stop once they see it doesn’t get to you, they only do it for a reaction.",
+        "text": "Just laugh it off. They’ll stop when they see it doesn’t get to you.",
         "isHelpful": false,
-        "explanation": "This encourages your friend to hide how they feel."
+        "explanation": "This tells your friend to hide how they feel and carry on alone."
       },
       {
         "id": "q6-b",
-        "text": "I’m sorry, you don’t deserve that. Do you want to talk about it, or think about who we could tell?",
+        "text": "I’m sorry they’re saying that. You don’t deserve that. Do you want to talk, or think about who we could tell?",
         "isHelpful": true,
-        "explanation": "This shows empathy and offers practical support without forcing a next step."
+        "explanation": "This validates their feelings and offers support."
       },
       {
         "id": "q6-c",
-        "text": "Ignore them and focus on your studies. People like that get bored eventually and move on.",
+        "text": "Ignore them and focus on your studies. They’ll get bored eventually.",
         "isHelpful": false,
-        "explanation": "This dismisses the problem."
+        "explanation": "This also tells your friend to carry on alone."
       }
     ],
     "helpfulReaction": {
@@ -210,25 +210,25 @@ export const questions: Question[] = [
     "topic": "Myth about spotting STIs",
     "startExpression": "thoughtful",
     "friendMessage": "“I saw a post saying you can tell if someone has an STI just by looking at them. Is that true?”",
-    "summary": "Many sexually transmitted infections do not cause visible symptoms. A person’s appearance cannot reliably tell you whether they have an STI. Testing and trustworthy medical information are important.",
+    "summary": "Appearance can’t show whether someone has an STI. Reliable information and testing matter.",
     "options": [
       {
         "id": "q7-a",
-        "text": "Sometimes, if there are visible signs like sores or a rash, so it’s worth looking out for them before you get close.",
+        "text": "Sometimes, if there are visible signs, so it’s worth looking out for them.",
         "isHelpful": false,
-        "explanation": "This suggests you can spot an STI by looking, which isn’t reliable."
+        "explanation": "This relies on appearance, but many people with an STI look and feel healthy."
       },
       {
         "id": "q7-b",
-        "text": "It depends. People who look unwell or run-down are usually more likely to have one, so watch for that.",
+        "text": "It depends. People who look unwell are more likely to have one.",
         "isHelpful": false,
-        "explanation": "This links appearance to infection, which isn’t a reliable guide."
+        "explanation": "This also relies on appearance, which isn’t a reliable guide."
       },
       {
         "id": "q7-c",
-        "text": "Not really. Many STIs have no visible signs, so testing and reliable medical info matter more than looks.",
+        "text": "Not really. Many STIs have no visible signs, so you can’t tell by looking. Testing and reliable info are what count.",
         "isHelpful": true,
-        "explanation": "This corrects the myth and points to reliable information."
+        "explanation": "This corrects the myth and points to testing."
       }
     ],
     "helpfulReaction": {
@@ -241,25 +241,25 @@ export const questions: Question[] = [
     "topic": "STI stigma",
     "startExpression": "worried",
     "friendMessage": "“Someone in our class found out they have an STI, and people are avoiding them.”",
-    "summary": "Having an STI does not make someone less deserving of kindness or respect. Everyday contact, such as sitting together or sharing food, does not spread STIs. Stigma and misinformation can discourage people from seeking testing and treatment.",
+    "summary": "STI stigma can stop people from getting tested and treated. Everyone deserves respect.",
     "options": [
       {
         "id": "q8-a",
-        "text": "An STI doesn’t make someone less deserving of respect, and sharing food or sitting together doesn’t spread it. Let’s not gossip.",
+        "text": "Having an STI doesn’t make someone less deserving of respect. Sitting together or sharing food doesn’t spread STIs, so let’s not avoid them or gossip.",
         "isHelpful": true,
-        "explanation": "This promotes accurate information and respectful treatment."
+        "explanation": "This challenges stigma with facts."
       },
       {
         "id": "q8-b",
-        "text": "I get why they’re avoiding them. It’s probably better to be careful until we know more about it, just in case, you never know.",
+        "text": "I get why they’re avoiding them. It’s better to be careful until we know more.",
         "isHelpful": false,
-        "explanation": "This reinforces fear based on misinformation."
+        "explanation": "This is fear based on misinformation."
       },
       {
         "id": "q8-c",
-        "text": "Maybe they should have kept it to themselves, then people wouldn’t be treating them differently now, and it would have stayed private.",
+        "text": "Maybe they should keep it to themselves so people don’t treat them differently.",
         "isHelpful": false,
-        "explanation": "This hides health information rather than challenging the stigma."
+        "explanation": "This tells the person to hide instead of challenging the stigma."
       }
     ],
     "helpfulReaction": {
@@ -272,25 +272,25 @@ export const questions: Question[] = [
     "topic": "Jokes and rumours about health",
     "startExpression": "upset",
     "friendMessage": "“Someone started a rumour in our class group chat that a classmate has an STI. Everyone’s joking about it. I don’t think it’s funny.”",
-    "summary": "Someone’s health information is private. Spreading rumours or making jokes about it can cause harm, even when the information is untrue. A supportive response avoids joining in the gossip and respects the person’s privacy.",
+    "summary": "Treat private health information with respect. Don’t spread rumours you can’t verify or normalise humiliation.",
     "options": [
       {
         "id": "q9-a",
-        "text": "It’s probably just banter. I wouldn’t make it a big deal, people will forget about it soon enough, honestly.",
+        "text": "It’s probably just banter. Don’t make it a big deal.",
         "isHelpful": false,
-        "explanation": "This treats hurtful behaviour as normal."
+        "explanation": "This normalises bullying."
       },
       {
         "id": "q9-b",
-        "text": "You’re right. Joking about someone’s health isn’t okay, and we can’t even know if it’s true. Let’s not join in.",
+        "text": "You’re right. Joking about someone’s private health isn’t okay, and we can’t even know if it’s true. Let’s not join in.",
         "isHelpful": true,
-        "explanation": "This protects privacy and discourages the spread of rumours."
+        "explanation": "This respects privacy and refuses the rumour."
       },
       {
         "id": "q9-c",
-        "text": "Message the classmate privately and ask if it’s true, so we at least know what’s really going on with them.",
+        "text": "Message the classmate privately and ask if it’s true, so we know what’s going on.",
         "isHelpful": false,
-        "explanation": "This puts the classmate in an uncomfortable position and feeds the speculation."
+        "explanation": "This feeds curiosity at the classmate’s expense and puts them on the spot."
       }
     ],
     "helpfulReaction": {
@@ -303,25 +303,25 @@ export const questions: Question[] = [
     "topic": "Feeling isolated",
     "startExpression": "worried",
     "friendMessage": "“I feel like everyone has someone to talk to except me. I don’t think anyone would notice if I stopped joining in.”",
-    "summary": "A supportive friend takes feelings of isolation seriously, listens without dismissing them, and encourages the person to connect with other trusted people too. One friend should not be expected to be someone’s only source of support.",
+    "summary": "Acknowledge the feeling, and encourage connection with other trusted people. If a friend seems hopeless or unsafe, encourage them to talk to a trusted adult or counsellor.",
     "options": [
       {
         "id": "q10-a",
-        "text": "You’re not alone, you’ve got me! You don’t need anyone else, we can just stick together from now on.",
+        "text": "You’re not alone, you’ve got me! You don’t need anyone else.",
         "isHelpful": false,
-        "explanation": "Well meant, but it may discourage your friend from building a wider circle of support."
+        "explanation": "Well meant, but this discourages wider support."
       },
       {
         "id": "q10-b",
-        "text": "Everyone feels like that sometimes. It always passes, you just have to give it a bit of time and be patient.",
+        "text": "Everyone feels like that sometimes. It passes, just give it time.",
         "isHelpful": false,
-        "explanation": "This brushes aside how they feel."
+        "explanation": "This dismisses the feeling."
       },
       {
         "id": "q10-c",
-        "text": "That sounds lonely, and I’m glad you told me. Want to talk, or think about who else could be there for you?",
+        "text": "That sounds lonely, and I’m glad you told me. Would you like to talk, or think about someone else you trust too?",
         "isHelpful": true,
-        "explanation": "This acknowledges their feelings and gently encourages other support too."
+        "explanation": "This acknowledges the feeling and opens the door to more support."
       }
     ],
     "helpfulReaction": {

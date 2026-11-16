@@ -1,4 +1,4 @@
-import { questions, type AnswerOption, type Question } from "@/data/questions";
+import { questions, type AnswerOption, type Question } from "../data/questions.ts";
 
 export interface GameEvent {
   questionId: string;
@@ -78,10 +78,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     case "begin":
-      return { ...state, phase: { name: "scenario", index: 0 } };
+      return state.phase.name === "intro" ? { ...state, phase: { name: "scenario", index: 0 } } : state;
 
     case "answer": {
       if (state.phase.name !== "scenario") return state;
+      const current = questionAt(state, state.phase.index);
+      if (current.id !== action.questionId || state.firstChoices[current.id] !== undefined || !current.options.some(o => o.id === action.optionId)) return state;
       return {
         ...state,
         phase: { name: "feedback", index: state.phase.index, chosenId: action.optionId },
@@ -94,7 +96,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "skip": {
-      if (state.phase.name !== "scenario") return state;
+      if (state.phase.name !== "scenario" || questionAt(state, state.phase.index).id !== action.questionId || state.firstChoices[action.questionId] !== undefined) return state;
       return {
         ...state,
         phase: phaseAfter(state.phase.index),
@@ -105,10 +107,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
 
-    case "tryAgain": {
-      if (state.phase.name !== "feedback") return state;
-      return { ...state, phase: { name: "scenario", index: state.phase.index } };
-    }
+    case "tryAgain":
+      return state;
 
     case "continue": {
       if (state.phase.name !== "feedback") return state;

@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createAdminClient } from "@/lib/supabase";
 import { GAME_ORDER, gameLabels } from "./labels";
+import { BoothResults } from "./BoothResults";
+import { localBoothPreview } from "@/lib/booth";
+import "../components/games-hub.css";
 
 const IDLE_MS = 30 * 60 * 1000;
 
@@ -301,10 +304,11 @@ function Dashboard({ client, onSignOut }: { client: Client; onSignOut: () => voi
 
   return (
     <main className="mx-auto max-w-3xl px-5 pb-16 pt-8">
+      <div className="lobby-backdrop" aria-hidden />
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-extrabold">SHY analytics</h1>
-          <p className="mt-1 font-semibold text-ink/70">Anonymous totals only. Each answer counts a player’s first pick.</p>
+          <p className="mt-1 font-semibold text-ink/70">Completed-game results and aggregate insights. Each answer counts a player’s first pick.</p>
         </div>
         <div className="flex gap-2">
           <button type="button" onClick={() => void refresh()} className={`${button} !bg-cream !px-4 !py-2 text-sm`}>Refresh</button>
@@ -316,6 +320,7 @@ function Dashboard({ client, onSignOut }: { client: Client; onSignOut: () => voi
       {loadedAt && <p className="mt-4 text-sm font-semibold text-ink/60">Loaded {loadedAt.toLocaleTimeString()}.</p>}
       {!stats && !error && <p className="mt-10 font-semibold">Loading totals…</p>}
 
+      <BoothResults client={client} />
       <div className="mt-6 space-y-8">
         {games.map((g) => <GameCard key={g.game_id} game={g} />)}
       </div>
@@ -368,6 +373,16 @@ export default function AdminApp() {
     };
   }, [step, client, signOut]);
 
+  if (localBoothPreview) {
+    return (
+      <main className="mx-auto max-w-3xl px-5 py-10">
+        <div className="lobby-backdrop" aria-hidden />
+        <h1 className="text-3xl font-extrabold">SHY analytics — local preview</h1>
+        <p className="mt-2 font-semibold text-ink/70">Dev mode: admin sign-in skipped. Only in-memory results from this browser session appear here; the live database is untouched.</p>
+        <BoothResults />
+      </main>
+    );
+  }
   if (!client) return <Unavailable />;
   switch (step) {
     case "loading":

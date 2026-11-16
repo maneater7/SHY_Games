@@ -1,4 +1,4 @@
-import { CheckCircle2, RotateCcw, SkipForward } from "lucide-react";
+import { CheckCircle2, Home, SkipForward } from "lucide-react";
 import { Character } from "@/components/Character";
 import { SupportPanel } from "@/components/game/SupportPanel";
 import { panel, primaryButton } from "@/components/game/ui";
@@ -19,13 +19,13 @@ const CONFETTI: { left: number; delay: number; tone: string }[] = [
 interface CompletionScreenProps {
   answeredQuestions: Question[];
   skippedCount: number;
-  onPlayAgain: () => void;
+  onHome: () => void;
 }
 
 export function CompletionScreen({
   answeredQuestions,
   skippedCount,
-  onPlayAgain,
+  onHome,
 }: CompletionScreenProps) {
   return (
     <section className="relative space-y-6 pov-rise-in">
@@ -85,9 +85,9 @@ export function CompletionScreen({
       <SupportPanel />
 
       <div className="flex justify-center pt-2">
-        <button type="button" onClick={onPlayAgain} className={primaryButton}>
-          <RotateCcw className="h-5 w-5" aria-hidden="true" />
-          Play again
+        <button type="button" onClick={onHome} className={primaryButton}>
+          <Home className="h-5 w-5" aria-hidden="true" />
+          Go to home page
         </button>
       </div>
     </section>

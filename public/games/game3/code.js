@@ -6,10 +6,10 @@ const PEER_ADVOCATE_URL = "#";
         "title": "Asking before a hug",
         "scenario": "Someone asks for permission before hugging another person.",
         "correct": "green",
-        "explanation": "Asking permission shows respect for another person’s boundaries.",
+        "explanation": "Asking permission shows respect for boundaries.",
         "ifPickedInstead": {
-          "yellow": "Asking first doesn’t need more context. It’s a clear sign of respect.",
-          "red": "Asking first is a healthy habit, not a warning sign."
+          "yellow": "Asking first is healthy, not a warning sign.",
+          "red": "Asking first is healthy, not a warning sign."
         },
         "takeaway": "Asking first shows respect."
       },
@@ -18,10 +18,10 @@ const PEER_ADVOCATE_URL = "#";
         "title": "Joking after being asked to stop",
         "scenario": "Someone keeps joking about another person’s boundaries after being asked to stop.",
         "correct": "red",
-        "explanation": "Continuing after someone has clearly said they’re uncomfortable shows a lack of respect for their boundaries.",
+        "explanation": "Continuing after someone says they’re uncomfortable shows a lack of respect for their boundaries.",
         "ifPickedInstead": {
-          "green": "The key detail is “after being asked to stop”. Once someone has said no, carrying on isn’t harmless.",
-          "yellow": "The key detail is “after being asked to stop”. Once someone has said no, carrying on is not a misunderstanding."
+          "green": "The key detail is “after being asked to stop”. Carrying on is not a misunderstanding.",
+          "yellow": "The key detail is “after being asked to stop”. Carrying on is not a misunderstanding."
         },
         "takeaway": "After someone says stop, carrying on is not a joke."
       },
@@ -30,10 +30,10 @@ const PEER_ADVOCATE_URL = "#";
         "title": "Going quiet when upset",
         "scenario": "A friend goes quiet whenever they’re upset and won’t say why.",
         "correct": "yellow",
-        "explanation": "It needs context. Some people need time before they can talk, and the healthy response is to check in kindly and respect their pace. It becomes a concern if the silence is used to punish or control the other person.",
+        "explanation": "It needs context. Some people need time before they can talk, so check in kindly and respect their pace. It’s a concern if the silence is used to punish or control.",
         "ifPickedInstead": {
-          "green": "One situation alone doesn’t tell us enough to call it healthy. Check in kindly and see how they respond.",
-          "red": "One situation alone doesn’t tell us enough to call it harmful. Some people just need time before they can talk."
+          "green": "One situation alone doesn’t tell us enough. Talking about it is the next step.",
+          "red": "One situation alone doesn’t tell us enough. Talking about it is the next step."
         },
         "takeaway": "Silence can mean someone needs time. Check in kindly and respect their pace.",
         "branches": {
@@ -48,8 +48,8 @@ const PEER_ADVOCATE_URL = "#";
         "correct": "red",
         "explanation": "Trust doesn’t depend on sending private images. Using trust to pressure someone is manipulation, and consent must be freely given.",
         "ifPickedInstead": {
-          "green": "Pressure is a warning sign even when it’s phrased as a compliment or a test of trust.",
-          "yellow": "This isn’t a grey area. Consent must be freely given, and pressure to send pictures is a warning sign."
+          "green": "Pressure is a warning sign even when phrased as a compliment or a test of trust.",
+          "yellow": "Pressure is a warning sign even when phrased as a compliment or a test of trust."
         },
         "takeaway": "Trust never requires sending private pictures."
       },
@@ -58,10 +58,10 @@ const PEER_ADVOCATE_URL = "#";
         "title": "Respecting topics you don’t want to discuss",
         "scenario": "A friend notices you don’t want to talk about certain topics and doesn’t push you.",
         "correct": "green",
-        "explanation": "People have different comfort levels, and respecting them is part of healthy communication.",
+        "explanation": "People have different comfort levels, and respecting them is healthy communication.",
         "ifPickedInstead": {
-          "yellow": "Not pushing is respect, not avoidance, so it doesn’t need more context.",
-          "red": "Not pushing is respect, not avoidance. It isn’t a warning sign."
+          "yellow": "Not pushing is respect, not avoidance.",
+          "red": "Not pushing is respect, not avoidance."
         },
         "takeaway": "Respecting someone’s comfort level is part of healthy communication."
       },
@@ -70,10 +70,10 @@ const PEER_ADVOCATE_URL = "#";
         "title": "Time with friends",
         "scenario": "Your partner says they miss you when you see friends on weekends and asks you to spend more time with them.",
         "correct": "yellow",
-        "explanation": "Wanting time together is normal. What matters is how they respond when you say no. Respecting your answer is healthy, while guilt-tripping or getting angry is a concern.",
+        "explanation": "Wanting time together is normal. What matters is how they respond when you say no. Respecting your answer is healthy; guilt-tripping or anger is a concern.",
         "ifPickedInstead": {
-          "green": "Wanting time together is normal, but we can’t call it healthy until we see how they react to your answer.",
-          "red": "Missing you isn’t a warning sign by itself. What matters is how they respond when you say no."
+          "green": "It can go either way, so look at what happens next.",
+          "red": "It can go either way, so look at what happens next."
         },
         "takeaway": "Wanting time together is normal. How they respond to your “no” is what matters.",
         "branches": {
@@ -88,8 +88,8 @@ const PEER_ADVOCATE_URL = "#";
         "correct": "red",
         "explanation": "Consent can be withdrawn at any time. Saying yes once doesn’t mean yes forever.",
         "ifPickedInstead": {
-          "green": "Treating an earlier yes as binding ignores the other person’s right to change their mind.",
-          "yellow": "This isn’t a grey area. Treating an earlier yes as binding ignores the other person’s right to change their mind."
+          "green": "Treating an earlier yes as binding ignores their right to change their mind.",
+          "yellow": "Treating an earlier yes as binding ignores their right to change their mind."
         },
         "takeaway": "Consent can be withdrawn at any time."
       },
@@ -98,22 +98,22 @@ const PEER_ADVOCATE_URL = "#";
         "title": "Asking before sharing",
         "scenario": "A friend asks whether it’s okay before telling anyone else something you shared with them.",
         "correct": "green",
-        "explanation": "Checking before sharing someone’s personal information respects their privacy and builds trust.",
+        "explanation": "Checking before sharing personal information respects privacy and builds trust.",
         "ifPickedInstead": {
-          "yellow": "Asking permission protects the other person’s privacy, so it doesn’t need more context.",
-          "red": "Asking first is a good sign, not a warning sign. It protects the other person’s privacy."
+          "yellow": "Asking permission protects the other person’s privacy.",
+          "red": "Asking permission protects the other person’s privacy."
         },
         "takeaway": "Asking before sharing builds trust."
       },
       {
         "id": "s9",
         "title": "Personal questions from someone online",
-        "scenario": "Someone you met online keeps asking where you live and where you study, and gets annoyed when you don’t answer.",
+        "scenario": "Someone you met online keeps asking where you live and which school you go to, and gets annoyed when you don’t answer.",
         "correct": "red",
-        "explanation": "Pressing for personal details and getting upset about boundaries is a safety risk. Don’t share your location or where you study, and tell someone you trust.",
+        "explanation": "Pressing for personal details and getting upset about boundaries is a safety risk. Don’t share your location or school, and tell a trusted adult.",
         "ifPickedInstead": {
           "green": "Annoyance at your “no” is the warning sign here, not the questions alone.",
-          "yellow": "Getting annoyed at your “no” while asking where you live is more than a grey area. It’s a safety risk."
+          "yellow": "Annoyance at your “no” is the warning sign here, not the questions alone."
         },
         "takeaway": "If someone gets upset when you keep personal details private, step back and tell someone you trust."
       },
@@ -122,9 +122,9 @@ const PEER_ADVOCATE_URL = "#";
         "title": "Choosing where to meet",
         "scenario": "A friend usually decides where you meet without asking what you’d like.",
         "correct": "yellow",
-        "explanation": "It could be habit rather than disrespect. It’s worth saying something like “Can I pick next time?” If they ignore a clear request, it becomes a red flag.",
+        "explanation": "It could be habit, not disrespect. Try saying “Can I pick next time?” If they ignore a clear request, it becomes a red flag.",
         "ifPickedInstead": {
-          "green": "It could be habit, but we can’t call it healthy until they hear a clear request. Try saying something.",
+          "green": "Small patterns like this are a chance to communicate, not an automatic red flag.",
           "red": "Small patterns like this are a chance to communicate, not an automatic red flag."
         },
         "takeaway": "Small patterns are a chance to speak up. A clear request that’s ignored is a red flag.",
@@ -401,8 +401,9 @@ const PEER_ADVOCATE_URL = "#";
     }
 
     function handleClassification(chosenFlag) {
-      if (currentIndex >= gameScenarios.length) return;
+      if (screenPlay.classList.contains('hidden') || currentIndex >= gameScenarios.length || !['green', 'yellow', 'red'].includes(chosenFlag)) return;
       const current = gameScenarios[currentIndex];
+      if (userAnswers[current.id]) return;
       const isCorrect = current.correct === chosenFlag;
 
       userAnswers[current.id] = {
@@ -433,8 +434,9 @@ const PEER_ADVOCATE_URL = "#";
     }
 
     function handleSkip() {
-      if (currentIndex >= gameScenarios.length) return;
+      if (screenPlay.classList.contains('hidden') || currentIndex >= gameScenarios.length) return;
       const current = gameScenarios[currentIndex];
+      if (userAnswers[current.id]) return;
       userAnswers[current.id] = {
         chosen: 'skipped',
         isCorrect: false
@@ -560,7 +562,7 @@ const PEER_ADVOCATE_URL = "#";
         duckPondWater.innerHTML = `
           <div class="flex items-center gap-2 text-xs font-bold text-ink/75 py-1">
             ${getPondSwimmerSVG(28)}
-            <span>Pip, Quill, and Barnaby are waiting here happily whenever you want to try again!</span>
+            <span>Pip, Quill, and Barnaby are glad you explored these situations with them.</span>
           </div>
         `;
       } else {
@@ -780,7 +782,7 @@ const PEER_ADVOCATE_URL = "#";
     // Button Event Listeners
     // -------------------------------------------------------------
     btnStart.addEventListener('click', initGame);
-    btnRestart.addEventListener('click', initGame);
+    btnRestart.addEventListener('click', () => notifyHub({ type: "shy:exit-to-hub" }));
 
     btnExit.addEventListener('click', () => {
       const current = gameScenarios[currentIndex];
@@ -791,6 +793,7 @@ const PEER_ADVOCATE_URL = "#";
     btnSkip.addEventListener('click', handleSkip);
 
     btnContinue.addEventListener('click', () => {
+      if (screenFeedback.classList.contains('hidden')) return;
       currentIndex++;
       if (currentIndex < gameScenarios.length) {
         loadScenario(currentIndex);

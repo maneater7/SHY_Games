@@ -1,9 +1,9 @@
-import { ArrowRight, CheckCircle2, Lightbulb, RotateCcw } from "lucide-react";
+import { ArrowRight, CheckCircle2, Lightbulb } from "lucide-react";
 import { Character } from "@/components/Character";
 import { ChatBubble, PlayerBubble } from "@/components/game/ChatBubble";
 import { QuestionProgress, type TrailSegment } from "@/components/game/ProgressTrail";
 import { SupportPanel } from "@/components/game/SupportPanel";
-import { chip, panel, primaryButton, secondaryButton } from "@/components/game/ui";
+import { chip, panel, primaryButton } from "@/components/game/ui";
 import type { Question } from "@/data/questions";
 
 const STILL_UNSURE_CAPTION = "Still unsure how to feel";
@@ -14,7 +14,6 @@ interface FeedbackScreenProps {
   question: Question;
   chosenId: string;
   segments: TrailSegment[];
-  onTryAgain: () => void;
   onContinue: () => void;
 }
 
@@ -24,7 +23,6 @@ export function FeedbackScreen({
   question,
   chosenId,
   segments,
-  onTryAgain,
   onContinue,
 }: FeedbackScreenProps) {
   const chosen = question.options.find((option) => option.id === chosenId);
@@ -92,11 +90,7 @@ export function FeedbackScreen({
 
       {question.showSupportPanel && <SupportPanel />}
 
-      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-between">
-        <button type="button" onClick={onTryAgain} className={secondaryButton}>
-          <RotateCcw className="h-4 w-4" aria-hidden="true" />
-          Try another response
-        </button>
+      <div className="flex justify-end pt-2">
         <button type="button" onClick={onContinue} className={primaryButton}>
           Continue
           <ArrowRight className="h-5 w-5" aria-hidden="true" />

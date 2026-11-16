@@ -147,9 +147,11 @@ function GameCard({ game, index, onSelect }: { game: GameDefinition; index: numb
 
 interface GamesHubProps {
   onSelectGame: (gameId: GameId) => void;
+  onNewPlayer: () => void;
+  switchingDisabled: boolean;
 }
 
-export function GamesHub({ onSelectGame }: GamesHubProps) {
+export function GamesHub({ onSelectGame, onNewPlayer, switchingDisabled }: GamesHubProps) {
   const readyCount = games.filter((game) => game.available).length;
 
   return (
@@ -168,10 +170,7 @@ export function GamesHub({ onSelectGame }: GamesHubProps) {
             <small>Sexual Health for Youth</small>
           </div>
         </div>
-        <span className="lobby-live">
-          <span />
-          {readyCount} games live
-        </span>
+        <button type="button" onClick={onNewPlayer} disabled={switchingDisabled} className="min-h-11 rounded-xl border-[3px] border-ink bg-turquoise px-4 py-2 text-sm font-extrabold shadow-chunky disabled:opacity-50">New Player</button>
       </header>
 
       <main className="lobby-main">

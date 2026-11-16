@@ -39,16 +39,13 @@ test("a new run shuffles options and scenario order without losing any", () => {
   }
 });
 
-test("only the first choice counts, but players can try other moves", () => {
-  let state = canonicalRun();
-  state = gameReducer(state, { type: "choose", optionId: otherId(0) });
+test("the first choice is final and retry cannot reopen an answered scene", () => {
+  const state = gameReducer(canonicalRun(), { type: "choose", optionId: otherId(0) });
   assert.deepEqual(state.phase, { name: "outcome", index: 0, chosenId: otherId(0) });
-  state = gameReducer(state, { type: "retry" });
-  state = gameReducer(state, { type: "choose", optionId: bestId(0) });
+  assert.equal(gameReducer(state, { type: "retry" }), state);
+  assert.equal(gameReducer(state, { type: "choose", optionId: bestId(0) }), state);
   assert.equal(state.firstChoices.s1, otherId(0));
-  assert.equal(state.phase.name === "outcome" && state.phase.chosenId, bestId(0));
-  state = gameReducer(gameReducer(state, { type: "retry" }), { type: "choose", optionId: otherId(0) });
-  assert.deepEqual(state.retried, ["s1"], "retries are counted once per scenario");
+  assert.deepEqual(state.retried, []);
 });
 
 test("skipping is blocked once a scenario has been answered", () => {

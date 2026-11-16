@@ -66,7 +66,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "choose": {
       if (phase.name !== "scene") return state;
       const scenario = scenarioAt(state, phase.index);
-      if (!scenario.options.some((option) => option.id === action.optionId)) return state;
+      if (state.firstChoices[scenario.id] !== undefined || !scenario.options.some((option) => option.id === action.optionId)) return state;
       return {
         ...state,
         phase: { name: "outcome", index: phase.index, chosenId: action.optionId },
@@ -85,15 +85,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
 
-    case "retry": {
-      if (phase.name !== "outcome") return state;
-      const { id } = scenarioAt(state, phase.index);
-      return {
-        ...state,
-        phase: { name: "scene", index: phase.index },
-        retried: state.retried.includes(id) ? state.retried : [...state.retried, id],
-      };
-    }
+    case "retry":
+      return state;
 
     case "next":
       return phase.name === "outcome" ? { ...state, phase: phaseAfter(state, phase.index) } : state;

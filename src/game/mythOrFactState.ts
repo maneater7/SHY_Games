@@ -1,4 +1,4 @@
-import { questions, type Answer } from "@/data/mythOrFactQuestions";
+import { questions, type Answer } from "../data/mythOrFactQuestions.ts";
 
 export type Phase = "welcome" | "question" | "feedback" | "complete";
 

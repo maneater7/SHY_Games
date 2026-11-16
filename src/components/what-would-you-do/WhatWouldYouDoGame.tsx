@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle2, HeartHandshake, Info, Lightbulb, RotateCcw, SkipForward } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, HeartHandshake, Home, Info, Lightbulb, SkipForward } from "lucide-react";
 import { type TrailSegment } from "@/components/game/ProgressTrail";
 import { SupportPanel } from "@/components/game/SupportPanel";
 import { badge, chip, optionCard, optionTones, panel, primaryButton, secondaryButton, skipButton } from "@/components/game/ui";
@@ -31,45 +31,49 @@ function useFocusOnMount<T extends HTMLElement>(key: string) {
   return ref;
 }
 
-const NODE_CLASS: Record<TrailSegment, string> = {
-  done: "bg-turquoise",
-  skipped: "bg-lavender",
-  current: "bg-peach",
-  todo: "bg-cream",
+const NODE_FILL: Record<TrailSegment, string> = {
+  done: "#4DEBE3",
+  skipped: "#B9A5F5",
+  current: "#FFD45C",
+  todo: "#FFF8ED",
 };
 
 // The journey through the ten moments drawn as a little road: one stop per
 // scenario and a pin that slides along as the player moves forward.
 function Roadmap({ state, index, topic }: { state: GameState; index: number; topic: string }) {
   const total = state.sequence.length || TOTAL;
-  const pct = total > 1 ? index / (total - 1) : 0;
+  const stops = Array.from({ length: total }, (_, i) => ({ x: 46 + i * (808 / Math.max(1, total - 1)), y: 90 + Math.sin(i * Math.PI / 2) * 25 }));
+  const route = stops.map((p, i) => i === 0 ? `M${p.x} ${p.y}` : `C${(stops[i - 1].x + p.x) / 2} ${stops[i - 1].y}, ${(stops[i - 1].x + p.x) / 2} ${p.y}, ${p.x} ${p.y}`).join(" ");
+  const position = stops[index];
+  const completed = Object.keys(state.firstChoices).length + state.skipped.length;
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className={`${chip} bg-peach`}>Scenario {index + 1} of {total}</span>
-        <span className="text-right text-sm font-bold">{topic}</span>
+    <div className="wwyd-journey mb-6 overflow-hidden rounded-3xl border-[3px] border-ink bg-cream shadow-chunky-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 pt-4">
+        <span className="text-xs font-extrabold uppercase tracking-widest text-ink/65">Your journey through town</span>
+        <span className={`${chip} bg-white`}>{completed} / {total} explored</span>
       </div>
-      <div
-        role="progressbar"
-        aria-label="Journey progress"
-        aria-valuemin={1}
-        aria-valuemax={total}
-        aria-valuenow={index + 1}
-        className="relative h-12 rounded-full border-[3px] border-ink bg-white/70"
-      >
-        <div aria-hidden="true" className="absolute inset-x-7 top-1/2 h-1 -translate-y-1/2 rounded-full bg-ink/15" />
-        <div aria-hidden="true" className="absolute inset-x-7 top-1/2 flex -translate-y-1/2 items-center justify-between">
-          {segmentsFor(state, index).map((segment, i) => (
-            <span key={i} className={`h-2.5 w-2.5 rounded-full border-2 border-ink transition-colors duration-300 ${NODE_CLASS[segment]}`} />
-          ))}
-        </div>
-        <span
-          aria-hidden="true"
-          className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-ink bg-sun shadow-chunky-sm transition-[left] duration-700 ease-in-out motion-reduce:transition-none"
-          style={{ left: `calc(1.75rem + (100% - 3.5rem) * ${pct})` }}
-        >
-          <span className="absolute left-1/2 top-full h-2 w-0.5 -translate-x-1/2 bg-ink/40" />
-        </span>
+      <div role="progressbar" aria-label="Journey progress" aria-valuemin={0} aria-valuemax={total} aria-valuenow={completed} aria-valuetext={`${completed} of ${total} scenes explored. Current scene ${index + 1}: ${topic}`}>
+        <svg viewBox="0 0 900 165" className="block w-full" aria-hidden="true">
+          <path d="M0 105 Q130 35 260 100 T530 105 T900 90 V165 H0Z" fill="#E3EFD5" />
+          <path d="M0 150 Q180 115 350 150 T700 145 T900 155 V165 H0Z" fill="#CFDFC1" />
+          <circle cx="95" cy="34" r="14" fill="#FFD45C" />
+          <path d={route} fill="none" stroke="#2B2350" strokeWidth="29" strokeLinecap="round" />
+          <path d={route} fill="none" stroke="#DDD3BF" strokeWidth="23" strokeLinecap="round" />
+          <path d={route} fill="none" stroke="#FFF8ED" strokeWidth="2" strokeDasharray="5 9" />
+          {segmentsFor(state, index).map((segment, i) => <g key={state.sequence[i]}>
+            <circle cx={stops[i].x} cy={stops[i].y} r={i === index ? 18 : 15} fill={NODE_FILL[segment]} stroke="#2B2350" strokeWidth="3" className="wwyd-map-stop" />
+            <text x={stops[i].x} y={stops[i].y + 6} textAnchor="middle" fontSize="18" fontWeight="800" fill="#2B2350">{segment === "done" ? "✓" : segment === "skipped" ? "–" : i + 1}</text>
+          </g>)}
+          <g className="wwyd-map-pin" style={{ transform: `translate(${position.x}px, ${position.y - 23}px)` }}>
+            <path d="M0 0 C-7 -10 -17 -16 -17 -28 A17 17 0 1 1 17 -28 C17 -16 7 -10 0 0Z" fill="#FFD45C" stroke="#2B2350" strokeWidth="3" />
+            <circle cx="0" cy="-28" r="6" fill="#FFF8ED" stroke="#2B2350" strokeWidth="2" />
+          </g>
+          <path d="M866 29 V62 M867 30 H887 L880 38 L887 46 H867" fill="#4DEBE3" stroke="#2B2350" strokeWidth="3" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t-2 border-ink/10 bg-white/60 px-4 py-3">
+        <span className="text-sm font-extrabold">Stop {index + 1} · {topic}</span>
+        <span className="text-xs font-semibold text-ink/65">{index + 1 < total ? `Up next: ${scenarioAt(state, index + 1).topic}` : "Last stop — your summary is next"}</span>
       </div>
     </div>
   );
@@ -121,7 +125,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
   const steps = [
     ["Read the moment", "Someone says something. Take a second with it."],
     ["Make your move", "Pick what you’d really do. There’s no timer."],
-    ["See how it lands", "Watch how they react, then try another move if you’re curious."],
+    ["See how it lands", "Read the feedback, then follow the map to your next scene."],
   ];
   return (
     <section className="pov-rise-in">
@@ -187,7 +191,6 @@ function SceneScreen({
   return (
     <section className="space-y-6 pov-rise-in">
       <h1 className="sr-only">What Would You Do? Scenario {index + 1}: {scenario.topic}</h1>
-      <Roadmap state={state} index={index} topic={scenario.topic} />
 
       <div>
         <SceneFrame scenario={scenario} mood={scenario.startMood} />
@@ -232,13 +235,11 @@ function OutcomeScreen({
   state,
   index,
   chosenId,
-  onRetry,
   onNext,
 }: {
   state: GameState;
   index: number;
   chosenId: string;
-  onRetry: () => void;
   onNext: () => void;
 }) {
   const scenario = scenarioAt(state, index);
@@ -253,7 +254,6 @@ function OutcomeScreen({
   return (
     <section className="space-y-6 pov-rise-in">
       <h1 className="sr-only">What Would You Do? Scenario {index + 1} outcome: {scenario.topic}</h1>
-      <Roadmap state={state} index={index} topic={scenario.topic} />
 
       <div className="ml-auto max-w-[88%] rounded-3xl border-[3px] border-ink bg-peach px-5 py-4 shadow-chunky-sm">
         <span className="text-xs font-extrabold uppercase tracking-wider">Your move</span>
@@ -307,11 +307,7 @@ function OutcomeScreen({
 
       {scenario.showSupportPanel && <SupportPanel />}
 
-      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-between">
-        <button type="button" onClick={onRetry} className={secondaryButton}>
-          <RotateCcw className="h-4 w-4" aria-hidden="true" />
-          Try a different move
-        </button>
+      <div className="flex justify-end pt-2">
         <button type="button" onClick={onNext} className={primaryButton}>
           {isLast ? "See your summary" : "Next scene"}
           <ArrowRight className="h-5 w-5" aria-hidden="true" />
@@ -321,7 +317,7 @@ function OutcomeScreen({
   );
 }
 
-function Complete({ state, onPlayAgain, onExit }: { state: GameState; onPlayAgain: () => void; onExit?: () => void }) {
+function Complete({ state, onExit }: { state: GameState; onExit?: () => void }) {
   const summary = summarize(state);
   const headingRef = useFocusOnMount<HTMLHeadingElement>("complete");
   const answered = scenarios.filter((scenario) => state.firstChoices[scenario.id] !== undefined);
@@ -392,15 +388,11 @@ function Complete({ state, onPlayAgain, onExit }: { state: GameState; onPlayAgai
 
       <div className="flex flex-col-reverse justify-center gap-3 pt-2 sm:flex-row">
         {onExit && (
-          <button type="button" onClick={onExit} className={secondaryButton}>
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Games Hub
+          <button type="button" onClick={onExit} className={primaryButton}>
+            <Home className="h-5 w-5" aria-hidden="true" />
+            Go to home page
           </button>
         )}
-        <button type="button" onClick={onPlayAgain} className={primaryButton}>
-          <RotateCcw className="h-5 w-5" aria-hidden="true" />
-          Play again
-        </button>
       </div>
     </section>
   );
@@ -461,12 +453,11 @@ export function WhatWouldYouDoGame({ onExitToHub }: WhatWouldYouDoGameProps) {
             state={state}
             index={phase.index}
             chosenId={phase.chosenId}
-            onRetry={() => dispatch({ type: "retry" })}
             onNext={() => dispatch({ type: "next" })}
           />
         );
       case "complete":
-        return <Complete state={state} onPlayAgain={start} onExit={onExitToHub} />;
+        return <Complete state={state} onExit={onExitToHub} />;
     }
   };
 
@@ -492,7 +483,12 @@ export function WhatWouldYouDoGame({ onExitToHub }: WhatWouldYouDoGameProps) {
         )}
       </header>
 
-      <main className="mx-auto max-w-3xl px-5 pb-16 pt-8 sm:px-8">{renderPhase()}</main>
+      <main className="mx-auto max-w-3xl px-5 pb-16 pt-8 sm:px-8">
+        {(phase.name === "scene" || phase.name === "outcome") && (
+          <Roadmap state={state} index={phase.index} topic={scenarioAt(state, phase.index).topic} />
+        )}
+        {renderPhase()}
+      </main>
     </div>
   );
 }

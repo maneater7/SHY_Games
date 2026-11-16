@@ -31,7 +31,6 @@ function segmentsFor(state: GameState, current: number): TrailSegment[] {
 export function PovGame({ onEvent, onExitToHub }: PovGameProps) {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState);
   const hasSubmittedRef = useRef(false);
-  const retriedRef = useRef(new Set<string>());
   const { phase } = state;
   const total = questions.length;
 
@@ -46,13 +45,12 @@ export function PovGame({ onEvent, onExitToHub }: PovGameProps) {
     void submitGameRun(ANALYTICS_ID, {
       answers: state.firstChoices,
       skippedQuestionIds: state.skipped,
-      retriedQuestionIds: [...retriedRef.current],
+      retriedQuestionIds: [],
     });
   }, [phase.name, state.firstChoices, state.skipped]);
 
   const startNewGame = () => {
     hasSubmittedRef.current = false;
-    retriedRef.current = new Set();
     void recordGameStart(ANALYTICS_ID);
     dispatch({ type: "newGame" });
   };
@@ -105,10 +103,6 @@ export function PovGame({ onEvent, onExitToHub }: PovGameProps) {
             question={question}
             chosenId={phase.chosenId}
             segments={segmentsFor(state, phase.index)}
-            onTryAgain={() => {
-              retriedRef.current.add(question.id);
-              dispatch({ type: "tryAgain" });
-            }}
             onContinue={() => dispatch({ type: "continue" })}
           />
         );
@@ -119,7 +113,7 @@ export function PovGame({ onEvent, onExitToHub }: PovGameProps) {
           <CompletionScreen
             answeredQuestions={questions.filter((question) => state.firstChoices[question.id] !== undefined)}
             skippedCount={state.skipped.length}
-            onPlayAgain={startNewGame}
+            onHome={() => onExitToHub?.()}
           />
         );
     }
