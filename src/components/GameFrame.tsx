@@ -22,6 +22,11 @@ const isStringRecord = (value: unknown): value is Record<string, string> =>
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((v) => typeof v === "string");
 
+const MAX_QUESTIONS = 50;
+const VALID_FLAGS = new Set(["green", "yellow", "red"]);
+const isFlagRecord = (value: unknown): value is Record<string, string> =>
+  isStringRecord(value) && Object.values(value).every((v) => VALID_FLAGS.has(v));
+
 export function GameFrame({ gameId, onBack }: GameFrameProps) {
   const game = gameSources[gameId];
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -59,7 +64,11 @@ export function GameFrame({ gameId, onBack }: GameFrameProps) {
           if (typeof data.questionId === "string") progressRef.current.questionId = data.questionId;
           break;
         case "shy:game-complete":
-          if (progressRef.current.complete || !isStringRecord(data.answers) || !isStringArray(data.skippedQuestionIds)) break;
+          if (progressRef.current.complete
+            || !isFlagRecord(data.answers)
+            || !isStringArray(data.skippedQuestionIds)
+            || Object.keys(data.answers).length > MAX_QUESTIONS
+            || data.skippedQuestionIds.length > MAX_QUESTIONS) break;
           progressRef.current.complete = true;
           void submitGameRun(game.analyticsId, { answers: data.answers, skippedQuestionIds: data.skippedQuestionIds });
           break;

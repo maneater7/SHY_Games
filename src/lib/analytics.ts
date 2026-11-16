@@ -39,7 +39,7 @@ export async function retryResults() {
   saveError = "";
   notify();
   try {
-    for (const [id, save] of pending) {
+    for (const [id, save] of [...pending]) {
       await save();
       pending.delete(id);
       saved.add(id);

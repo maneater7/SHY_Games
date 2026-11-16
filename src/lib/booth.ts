@@ -25,7 +25,6 @@ export interface BoothResult {
 }
 interface Player { token: string; name: string; email: string }
 const PLAYER_KEY = "shy-booth-player";
-const RESULTS_KEY = "shy-booth-results";
 const stored = <T,>(key: string, storage: Storage): T | null => {
   try { const raw = storage.getItem(key); return raw ? JSON.parse(raw) as T : null; } catch { return null; }
 };
@@ -38,10 +37,13 @@ const catalog: Record<string, { id: string; best: string }[]> = {
 };
 export function currentPlayer() { return player; }
 export function clearPlayer() { player = null; sessionStorage.removeItem(PLAYER_KEY); }
-export function localResults() { return stored<BoothResult[]>(RESULTS_KEY, localStorage) ?? []; }
+// Preview results live in memory only: never persist names/emails to disk,
+// even in dev. Refreshing the page clears them.
+const previewResults: BoothResult[] = [];
+export function localResults() { return previewResults; }
 function saveResult(row: BoothResult) {
-  if (localResults().some(r => r.id === row.id)) return;
-  localStorage.setItem(RESULTS_KEY, JSON.stringify([...localResults(), row]));
+  if (previewResults.some(r => r.id === row.id)) return;
+  previewResults.push(row);
 }
 export async function registerPlayer(name: string, email: string) {
   const next = { token: crypto.randomUUID(), name: name.trim(), email: email.trim().toLowerCase() };

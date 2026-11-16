@@ -50,6 +50,10 @@ declare player uuid;
 begin
   select id into player from shy_private.booth_players where token = p_token;
   if player is null then raise exception 'Register before playing'; end if;
+  -- A player may replay, but not flood starts: a handful per game per window.
+  if not shy_private.take_rate_slot('booth:start:' || p_game_id || ':' || player, 6) then
+    return jsonb_build_object('recorded', false, 'reason', 'rate_limited');
+  end if;
   return public.record_game_start(p_game_id, player);
 end;
 $$;
@@ -73,7 +77,9 @@ begin
     if not exists (select 1 from shy_private.booth_runs where id = p_run_id and player_id = player and game_id = p_game_id) then
       raise exception 'Invalid attempt';
     end if;
-    return jsonb_build_object('recorded', true);
+    -- Resubmission of an already-stored run: report it as a duplicate so callers
+    -- know the payload was not re-processed (and re-scored) on this call.
+    return jsonb_build_object('recorded', true, 'duplicate', true);
   end if;
   result := public.submit_game_run(p_game_id, p_answers, p_skipped_question_ids, p_retried_question_ids, player);
   if result->>'recorded' <> 'true' then return result; end if;
