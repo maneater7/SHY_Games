@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle2, HeartHandshake, Home, Info, Lightbulb, SkipForward } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, HeartHandshake, Home, Info, SkipForward, XCircle } from "lucide-react";
 import { type TrailSegment } from "@/components/game/ProgressTrail";
 import { SupportPanel } from "@/components/game/SupportPanel";
 import { badge, chip, optionCard, optionTones, panel, primaryButton, secondaryButton, skipButton } from "@/components/game/ui";
@@ -260,6 +260,16 @@ function OutcomeScreen({
         <p className="mt-1 font-bold leading-relaxed">{chosen.text}</p>
       </div>
 
+      <div aria-live="polite" className={`flex items-center gap-4 rounded-3xl border-[3px] border-ink px-5 py-4 shadow-chunky-sm ${chosen.isBest ? "bg-turquoise" : "bg-soft-pink"}`}>
+        {chosen.isBest
+          ? <CheckCircle2 className="h-10 w-10 shrink-0" aria-hidden="true" />
+          : <XCircle className="h-10 w-10 shrink-0" aria-hidden="true" />}
+        <div>
+          <p className="text-lg font-extrabold sm:text-xl">{chosen.isBest ? "Correct — safest move" : "Not correct — there's a safer move"}</p>
+          <p className="text-sm font-semibold">{chosen.isBest ? "Nice call. That's the option we'd recommend too." : "See what we'd recommend below."}</p>
+        </div>
+      </div>
+
       <SceneFrame scenario={scenario} mood={chosen.outcome.mood}>
         <div className="pov-pop relative z-10 mx-3 -mt-6 rounded-3xl border-[3px] border-ink bg-cream px-5 py-4 shadow-chunky-sm sm:mx-8 sm:-mt-8">
           <p className="text-xs font-extrabold uppercase tracking-wider text-ink/70">What happens</p>
@@ -269,18 +279,7 @@ function OutcomeScreen({
         </div>
       </SceneFrame>
 
-      <div aria-live="polite" className={`${panel()} space-y-3`}>
-        {chosen.isBest ? (
-          <span className={`${chip} bg-turquoise`}>
-            <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-            Safest move
-          </span>
-        ) : (
-          <span className={`${chip} bg-peach`}>
-            <Lightbulb className="h-4 w-4" aria-hidden="true" />
-            There’s a safer move
-          </span>
-        )}
+      <div className={`${panel()} space-y-3`}>
         <p className="text-lg font-semibold leading-relaxed">{scenario.explanation}</p>
       </div>
 
